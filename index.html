@@ -1,0 +1,1489 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kunal Singh Sisodiya | 4D Interactive Portfolio</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Three.js for 3D Background -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <!-- GSAP for Advanced Animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <!-- Marked.js & PDF.js from your original setup -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+        
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        dark: '#030712',
+                        glass: 'rgba(17, 24, 39, 0.7)',
+                        glassBorder: 'rgba(255, 255, 255, 0.08)',
+                        accent: '#06b6d4', // Cyan
+                        accent2: '#8b5cf6', // Violet
+                        neonPink: '#f0abfc', // Cyberpunk Pink
+                    },
+                    animation: {
+                        'spin-slow': 'spin 8s linear infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-glow': 'pulseGlow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        pulseGlow: {
+                            '0%, 100%': { opacity: 1, boxShadow: '0 0 20px #06b6d4' },
+                            '50%': { opacity: .5, boxShadow: '0 0 10px #06b6d4' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #030712;
+            color: #e2e8f0;
+            overflow-x: hidden;
+            cursor: none; /* Hide default cursor for custom one */
+        }
+
+        /* 3D Canvas Background */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Custom Cursor */
+        .cursor-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #06b6d4;
+            border-radius: 50%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 9999;
+            box-shadow: 0 0 10px #06b6d4, 0 0 20px #06b6d4;
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
+        }
+
+        .cursor-outline {
+            width: 40px;
+            height: 40px;
+            border: 1px solid rgba(6, 182, 212, 0.5);
+            border-radius: 50%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 9998;
+            transition: width 0.15s, height 0.15s;
+        }
+
+        /* Glassmorphism Classes */
+        .glass-panel {
+            background: rgba(17, 24, 39, 0.4);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .glass-card {
+            background: linear-gradient(145deg, rgba(30, 41, 59, 0.4) 0%, rgba(15, 23, 42, 0.6) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .glass-card:hover {
+            border-color: rgba(6, 182, 212, 0.4);
+            box-shadow: 0 0 30px rgba(6, 182, 212, 0.1);
+        }
+
+        /* Cyberpunk Glitch & Scanline Effects */
+        .text-gradient {
+            background: linear-gradient(to right, #06b6d4, #f0abfc, #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .cyber-glitch {
+            position: relative;
+        }
+        
+        .cyber-glitch::before, .cyber-glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.8;
+            pointer-events: none;
+        }
+
+        .cyber-glitch::before {
+            left: 2px;
+            text-shadow: -2px 0 #ff00ff;
+            clip-path: inset(20% 0 80% 0);
+            animation: glitch-anim-1 2.5s infinite linear alternate-reverse;
+        }
+
+        .cyber-glitch::after {
+            left: -2px;
+            text-shadow: 2px 0 #06b6d4;
+            clip-path: inset(80% 0 10% 0);
+            animation: glitch-anim-2 3s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim-1 {
+            0% { clip-path: inset(20% 0 80% 0); }
+            20% { clip-path: inset(60% 0 10% 0); transform: translate(-2px, 2px); }
+            40% { clip-path: inset(40% 0 50% 0); }
+            60% { clip-path: inset(80% 0 5% 0); transform: translate(2px, -2px); }
+            80% { clip-path: inset(10% 0 70% 0); }
+            100% { clip-path: inset(30% 0 50% 0); transform: translate(-2px, 0); }
+        }
+
+        @keyframes glitch-anim-2 {
+            0% { clip-path: inset(10% 0 60% 0); }
+            20% { clip-path: inset(30% 0 20% 0); transform: translate(2px, -2px); }
+            40% { clip-path: inset(70% 0 10% 0); }
+            60% { clip-path: inset(20% 0 50% 0); transform: translate(-2px, 2px); }
+            80% { clip-path: inset(50% 0 30% 0); }
+            100% { clip-path: inset(5% 0 80% 0); transform: translate(2px, 0); }
+        }
+
+        .scanlines {
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.2));
+            background-size: 100% 4px;
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #030712;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #06b6d4;
+        }
+
+        /* Reveal on Scroll Initial States */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Tilt effect perspective */
+        .tilt-wrapper {
+            perspective: 1000px;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-accent selection:text-white">
+
+    <canvas id="bg-canvas"></canvas>
+    
+    <div class="cursor-dot" id="cursor-dot"></div>
+    <div class="cursor-outline" id="cursor-outline"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 glass-panel transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex-shrink-0 flex items-center">
+                    <a href="#" class="font-heading text-3xl font-black text-white tracking-tighter">
+                        K<span class="text-accent">.</span>
+                    </a>
+                </div>
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="#about" class="text-slate-300 hover:text-accent transition font-medium text-sm tracking-wide uppercase">About</a>
+                    <a href="#skills" class="text-slate-300 hover:text-accent transition font-medium text-sm tracking-wide uppercase">Skills</a>
+                    <a href="#projects" class="text-slate-300 hover:text-accent transition font-medium text-sm tracking-wide uppercase">Projects</a>
+                    <a href="#certifications" class="text-slate-300 hover:text-accent transition font-medium text-sm tracking-wide uppercase">Certifications</a>
+                    <a href="#ai-playground" class="px-4 py-2 rounded-full border border-accent2/50 text-accent2 hover:bg-accent2 hover:text-white transition font-medium text-sm flex items-center gap-2 group">
+                        <i data-lucide="cpu" class="w-4 h-4 group-hover:animate-spin-slow"></i> AI Hub
+                    </a>
+                    <a href="#contact" class="px-5 py-2 bg-white text-black hover:bg-accent hover:text-white rounded-full transition font-semibold text-sm">Contact</a>
+                </div>
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-slate-300 hover:text-white focus:outline-none">
+                        <i data-lucide="menu" class="h-6 w-6"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden glass-panel border-t border-white/10 absolute w-full">
+            <div class="px-4 pt-2 pb-6 space-y-2 shadow-2xl">
+                <a href="#about" class="block px-3 py-3 rounded-lg text-base font-medium text-slate-300 hover:text-accent hover:bg-white/5">About</a>
+                <a href="#skills" class="block px-3 py-3 rounded-lg text-base font-medium text-slate-300 hover:text-accent hover:bg-white/5">Skills</a>
+                <a href="#projects" class="block px-3 py-3 rounded-lg text-base font-medium text-slate-300 hover:text-accent hover:bg-white/5">Projects</a>
+                <a href="#certifications" class="block px-3 py-3 rounded-lg text-base font-medium text-slate-300 hover:text-accent hover:bg-white/5">Certifications</a>
+                <a href="#ai-playground" class="block px-3 py-3 rounded-lg text-base font-medium text-accent2 hover:bg-accent2/10">AI Playground</a>
+                <a href="#contact" class="block px-3 py-3 rounded-lg text-base font-medium text-white bg-accent/20 border border-accent hover:bg-accent">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="relative z-10">
+        <!-- Hero Section -->
+        <section id="home" class="min-h-screen flex items-center pt-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto overflow-hidden relative">
+            <div class="scanlines opacity-50"></div>
+            <div class="w-full flex flex-col md:flex-row items-center justify-between gap-12">
+                <div class="md:w-3/5 space-y-8 relative z-10 hero-gsap-target">
+                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-panel border border-accent/30 text-accent font-mono text-xs tracking-widest uppercase">
+                        <span class="relative flex h-2 w-2">
+                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
+                          <span class="relative inline-flex rounded-full h-2 w-2 bg-accent"></span>
+                        </span>
+                        SYS.STATUS: ONLINE // AVAILABLE
+                    </div>
+                    <div class="space-y-2">
+                        <h2 class="text-xl md:text-2xl text-neonPink font-mono tracking-widest uppercase animate-pulse">> Initializing User...</h2>
+                        <h1 class="font-heading text-5xl md:text-7xl lg:text-8xl font-black text-white leading-tight cyber-glitch" data-text="Kunal Singh Sisodiya.">
+                            Kunal Singh <br/> <span class="text-gradient">Sisodiya.</span>
+                        </h1>
+                    </div>
+                    <h2 class="text-2xl md:text-3xl text-slate-300 font-light flex items-center gap-3">
+                        <i data-lucide="cpu" class="text-accent2 w-8 h-8"></i>
+                        Cyber-Physical Mobile Engineer
+                    </h2>
+                    <p class="text-lg text-slate-400 leading-relaxed max-w-xl font-light">
+                        Engineering immersive mobile experiences and scalable architectures. I bridge the gap between complex logic and beautiful, high-performance interfaces.
+                    </p>
+                    <div class="flex gap-4 pt-4 flex-wrap">
+                        <a href="#projects" class="group relative px-8 py-4 bg-white text-black font-bold rounded-full overflow-hidden hover:scale-105 transition-transform duration-300 shadow-[0_0_20px_rgba(6,182,212,0.4)]">
+                            <div class="absolute inset-0 bg-accent transform scale-x-0 origin-left group-hover:scale-x-100 transition-transform duration-500 ease-out z-0"></div>
+                        </a>
+                        <a href="Kunal_Singh_Sisodiya.pdf" target="_blank" class="px-8 py-4 glass-panel text-white font-medium rounded-full hover:bg-white/10 transition flex items-center gap-2 border border-white/10 hover:border-white/30">
+                            <i data-lucide="file-text" class="w-5 h-5 text-slate-300"></i> Resume
+                        </a>
+                        <a href="https://github.com/Hcxui" target="_blank" class="p-4 glass-panel text-white rounded-full hover:bg-white/10 hover:text-accent transition border border-white/10">
+                            <i data-lucide="github" class="w-6 h-6"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Floating 3D Element Container -->
+                <div class="md:w-2/5 flex justify-center relative hero-3d-target z-10" style="transition-delay: 0.2s;">
+                    <div class="relative w-72 h-72 lg:w-96 lg:h-96 animate-float">
+                        <!-- Abstract glowing rings -->
+                        <div class="absolute inset-0 rounded-full border border-accent/20 border-dashed animate-spin-slow"></div>
+                        <div class="absolute inset-4 rounded-full border border-accent2/30 animate-[spin_10s_linear_infinite_reverse]"></div>
+                        
+                        <div class="absolute inset-8 glass-panel rounded-full flex items-center justify-center border border-white/10 shadow-[0_0_50px_rgba(6,182,212,0.2)] overflow-hidden">
+                            <div class="absolute inset-0 bg-gradient-to-br from-accent/20 to-transparent"></div>
+                            <i data-lucide="smartphone" class="w-32 h-32 text-white relative z-10 drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]"></i>
+                        </div>
+                        
+                        <!-- Orbital Badges -->
+                        <div class="absolute top-0 right-10 glass-panel p-3 rounded-2xl border border-white/10 shadow-lg animate-bounce" style="animation-duration: 3s;">
+                            <i data-lucide="code-2" class="w-8 h-8 text-accent"></i>
+                        </div>
+                        <div class="absolute bottom-10 left-0 glass-panel p-3 rounded-2xl border border-white/10 shadow-lg animate-bounce" style="animation-duration: 4s; animation-delay: 1s;">
+                            <i data-lucide="database" class="w-8 h-8 text-accent2"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Scroll Indicator -->
+            <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex flex-col items-center gap-2 opacity-50 animate-bounce">
+                <span class="text-xs tracking-widest uppercase text-slate-400">Scroll</span>
+                <i data-lucide="mouse" class="w-5 h-5 text-white"></i>
+            </div>
+        </section>
+
+        <section id="about" class="py-32 relative">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col md:flex-row gap-16 items-center">
+                    <div class="md:w-1/2 reveal">
+                        <h2 class="font-heading text-4xl md:text-5xl font-bold text-white mb-6">Behind the <span class="text-gradient">Code</span></h2>
+                        <div class="w-20 h-1 bg-accent rounded mb-8"></div>
+                        <p class="text-slate-400 leading-relaxed text-lg mb-6">
+                            I am an entry-level Flutter developer deeply passionate about the intersection of design and robust engineering. I build cross-platform mobile applications using Dart, integrating RESTful APIs, and architecting real-time databases with Firebase.
+                        </p>
+                        <p class="text-slate-400 leading-relaxed text-lg mb-8">
+                            Beyond syntax, I focus on Object-Oriented principles, performance optimization, and creating interfaces that feel organic and intuitive to the user.
+                        </p>
+                        
+                        <div class="flex items-center gap-4 glass-panel p-4 rounded-2xl border border-white/10">
+                            <div class="p-3 bg-accent/20 rounded-xl">
+                                <i data-lucide="users" class="w-6 h-6 text-accent"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-bold">Leadership & Communication</h4>
+                                <p class="text-sm text-slate-400">Multi-year Class Representative bridging faculty and students.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="md:w-1/2 w-full reveal tilt-wrapper" style="transition-delay: 0.2s;">
+                        <div class="glass-card p-8 md:p-10 rounded-3xl relative overflow-hidden tilt-element">
+                            <div class="absolute top-0 right-0 w-64 h-64 bg-accent2/20 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2"></div>
+                            
+                            <h3 class="font-heading text-2xl font-bold text-white mb-8 flex items-center gap-3 relative z-10">
+                                <i data-lucide="graduation-cap" class="text-accent w-8 h-8"></i> Academic Profile
+                            </h3>
+                            
+                            <div class="relative z-10 border-l-2 border-accent/30 pl-6 space-y-8">
+                                <div class="relative">
+                                    <div class="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-dark border-2 border-accent"></div>
+                                    <h4 class="text-xl font-bold text-white">B.Tech in Information Technology</h4>
+                                    <p class="text-accent font-medium mt-1">SAGE University, Indore</p>
+                                    <p class="text-slate-500 text-sm mt-2 flex items-center gap-2">
+                                        <i data-lucide="calendar" class="w-4 h-4"></i> Expected Graduation: July 2026
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="skills" class="py-32 relative">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-20 reveal">
+                    <h2 class="font-heading text-4xl md:text-5xl font-bold text-white mb-6">Technical <span class="text-gradient">Arsenal</span></h2>
+                    <div class="w-20 h-1 bg-accent mx-auto rounded"></div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Skill 1 -->
+                    <div class="tilt-wrapper reveal">
+                        <div class="glass-card p-8 rounded-3xl h-full tilt-element group">
+                            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500/20 to-cyan-500/20 flex items-center justify-center border border-blue-500/30 mb-6 group-hover:scale-110 transition-transform">
+                                <i data-lucide="smartphone" class="w-7 h-7 text-cyan-400"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-white mb-4">Mobile Engineering</h3>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-3 py-1.5 bg-white/5 border border-white/10 rounded-lg text-sm text-slate-300">Flutter</span>
+                                <span class="px-3 py-1.5 bg-white/5 border border-white/10 rounded-lg text-sm text-slate-300">Dart</span>
+                                <span class="px-3 py-1.5 bg-white/5 border border-white/10 rounded-lg text-sm text-slate-300">Material UI</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Skill 2 -->
+                    <div class="tilt-wrapper reveal" style="transition-delay: 0.1s;">
+                        <div class="glass-card p-8 rounded-3xl h-full tilt-element group">
+                            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center border border-purple-500/30 mb-6 group-hover:scale-110 transition-transform">
+                                <i data-lucide="database" class="w-7 h-7 text-purple-400"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-white mb-4">Backend & Cloud</h3>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-3 py-1.5 bg-white/5 border border-white/10 rounded-lg text-sm text-slate-300">Firebase</span>
+                                <span class="px-3 py-1.5 bg-white/5 border border-white/10 rounded-lg text-sm text-slate-300">Firestore</span>
+                                <span class="px-3 py-1.5 bg-white/5 border border-white/10 rounded-lg text-sm text-slate-300">REST APIs</span>
+                                <span class="px-3 py-1.5 bg-white/5 border border-white/10 rounded-lg text-sm text-slate-300">JSON</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Skill 3 -->
+                    <div class="tilt-wrapper reveal" style="transition-delay: 0.2s;">
+                        <div class="glass-card p-8 rounded-3xl h-full tilt-element group">
+                            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-teal-500/20 flex items-center justify-center border border-emerald-500/30 mb-6 group-hover:scale-110 transition-transform">
+                                <i data-lucide="code" class="w-7 h-7 text-emerald-400"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-white mb-4">Core Concepts</h3>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-3 py-1.5 bg-white/5 border border-white/10 rounded-lg text-sm text-slate-300">OOP</span>
+                                <span class="px-3 py-1.5 bg-white/5 border border-white/10 rounded-lg text-sm text-slate-300">Data Structures</span>
+                                <span class="px-3 py-1.5 bg-white/5 border border-white/10 rounded-lg text-sm text-slate-300">Python</span>
+                                <span class="px-3 py-1.5 bg-white/5 border border-white/10 rounded-lg text-sm text-slate-300">Java</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Skill 4 (Spanning) -->
+                    <div class="tilt-wrapper reveal lg:col-span-3">
+                        <div class="glass-card p-8 rounded-3xl tilt-element flex flex-col md:flex-row items-center gap-8">
+                            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-500/20 to-red-500/20 flex items-center justify-center border border-orange-500/30 flex-shrink-0">
+                                <i data-lucide="wrench" class="w-8 h-8 text-orange-400"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-white mb-4 text-center md:text-left">Architecture & Tooling</h3>
+                                <div class="flex flex-wrap justify-center md:justify-start gap-3">
+                                    <span class="px-4 py-2 bg-dark/50 border border-white/10 rounded-xl text-sm text-white font-medium flex items-center gap-2"><i data-lucide="github" class="w-4 h-4"></i> Git/GitHub</span>
+                                    <span class="px-4 py-2 bg-dark/50 border border-white/10 rounded-xl text-sm text-slate-300">Provider (State)</span>
+                                    <span class="px-4 py-2 bg-dark/50 border border-white/10 rounded-xl text-sm text-slate-300">VS Code & Android Studio</span>
+                                    <span class="px-4 py-2 bg-dark/50 border border-white/10 rounded-xl text-sm text-slate-300">Linux/Red Hat Environment</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="projects" class="py-32 relative bg-dark/50 border-y border-white/5">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-20 reveal">
+                    <h2 class="font-heading text-4xl md:text-5xl font-bold text-white mb-6">Selected <span class="text-gradient">Works</span></h2>
+                    <div class="w-20 h-1 bg-accent2 mx-auto rounded"></div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                    <!-- Project 1 -->
+                    <div class="tilt-wrapper reveal">
+                        <div class="glass-card rounded-3xl overflow-hidden tilt-element group h-full flex flex-col border border-white/10">
+                            <div class="h-64 bg-gradient-to-br from-blue-900/50 to-indigo-900/50 relative flex items-center justify-center overflow-hidden border-b border-white/10">
+                                <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-20"></div>
+                                <div class="absolute inset-0 bg-black/40 group-hover:bg-transparent transition duration-500"></div>
+                                <i data-lucide="edit-3" class="w-24 h-24 text-white opacity-90 transform group-hover:scale-125 group-hover:rotate-12 transition duration-700 ease-out z-10"></i>
+                            </div>
+                            <div class="p-8 flex flex-col flex-grow relative">
+                                <h3 class="font-heading text-2xl font-bold text-white mb-3">Notes App</h3>
+                                <p class="text-slate-400 mb-6 flex-grow leading-relaxed">
+                                    A robust Flutter application managing user notes with optimized local state handling. Features full CRUD operations, clean UI architecture, and highly responsive layouts adapting to all device metrics.
+                                </p>
+                                <div class="flex flex-wrap gap-2 mb-8">
+                                    <span class="px-3 py-1 bg-accent/10 text-accent text-xs font-semibold rounded border border-accent/20">Flutter</span>
+                                    <span class="px-3 py-1 bg-accent/10 text-accent text-xs font-semibold rounded border border-accent/20">Dart</span>
+                                    <span class="px-3 py-1 bg-white/5 text-slate-300 text-xs font-semibold rounded border border-white/10">State Mgmt</span>
+                                </div>
+                                <a href="https://github.com/HcxUi/notes_app.git" target="_blank" class="inline-flex items-center justify-center gap-2 w-full py-4 bg-white text-black hover:bg-accent hover:text-white rounded-xl transition-colors font-bold tracking-wide">
+                                    <i data-lucide="github" class="w-5 h-5"></i> Explore Source
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Project 2 -->
+                    <div class="tilt-wrapper reveal" style="transition-delay: 0.2s;">
+                        <div class="glass-card rounded-3xl overflow-hidden tilt-element group h-full flex flex-col border border-white/10">
+                            <div class="h-64 bg-gradient-to-br from-teal-900/50 to-emerald-900/50 relative flex items-center justify-center overflow-hidden border-b border-white/10">
+                                <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
+                                <div class="absolute inset-0 bg-black/40 group-hover:bg-transparent transition duration-500"></div>
+                                <i data-lucide="brain-circuit" class="w-24 h-24 text-white opacity-90 transform group-hover:scale-125 group-hover:-rotate-12 transition duration-700 ease-out z-10"></i>
+                            </div>
+                            <div class="p-8 flex flex-col flex-grow relative">
+                                <h3 class="font-heading text-2xl font-bold text-white mb-3">AI Mental Health Assistant</h3>
+                                <p class="text-slate-400 mb-6 flex-grow leading-relaxed">
+                                    An AI-driven mobile chatbot engineered to provide safe, conversational emotional support and stress management. Built with complex UI/UX considerations for empathetic human-computer interaction.
+                                </p>
+                                <div class="flex flex-wrap gap-2 mb-8">
+                                    <span class="px-3 py-1 bg-accent/10 text-accent text-xs font-semibold rounded border border-accent/20">Flutter</span>
+                                    <span class="px-3 py-1 bg-accent2/20 text-accent2 text-xs font-semibold rounded border border-accent2/30">AI Integration</span>
+                                    <span class="px-3 py-1 bg-white/5 text-slate-300 text-xs font-semibold rounded border border-white/10">UX Architecture</span>
+                                </div>
+                                <a href="https://github.com/HcxUi/Mental-Health-Assistant.git" target="_blank" class="inline-flex items-center justify-center gap-2 w-full py-4 bg-white text-black hover:bg-accent2 hover:text-white rounded-xl transition-colors font-bold tracking-wide">
+                                    <i data-lucide="github" class="w-5 h-5"></i> Explore Source
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Project 3 -->
+                    <div class="tilt-wrapper reveal" style="transition-delay: 0.4s;">
+                        <div class="glass-card rounded-3xl overflow-hidden tilt-element group h-full flex flex-col border border-white/10">
+                            <div class="h-64 bg-gradient-to-br from-orange-900/50 to-rose-900/50 relative flex items-center justify-center overflow-hidden border-b border-white/10">
+                                <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-30"></div>
+                                <div class="absolute inset-0 bg-black/40 group-hover:bg-transparent transition duration-500"></div>
+                                <i data-lucide="compass" class="w-24 h-24 text-white opacity-90 transform group-hover:scale-125 group-hover:rotate-12 transition duration-700 ease-out z-10"></i>
+                            </div>
+                            <div class="p-8 flex flex-col flex-grow relative">
+                                <h3 class="font-heading text-2xl font-bold text-white mb-3">DecisionSense</h3>
+                                <p class="text-slate-400 mb-6 flex-grow leading-relaxed">
+                                    An AI-driven Flutter application that helps users reflect on decisions, identify cognitive biases, and receive personalized recommendations through secure on-device intelligence and offline data processing.
+                                </p>
+                                <div class="flex flex-wrap gap-2 mb-8">
+                                    <span class="px-3 py-1 bg-accent/10 text-accent text-xs font-semibold rounded border border-accent/20">Flutter</span>
+                                    <span class="px-3 py-1 bg-accent2/20 text-accent2 text-xs font-semibold rounded border border-accent2/30">AI</span>
+                                    <span class="px-3 py-1 bg-white/5 text-slate-300 text-xs font-semibold rounded border border-white/10">Mobile App</span>
+                                    <span class="px-3 py-1 bg-white/5 text-slate-300 text-xs font-semibold rounded border border-white/10">Privacy First</span>
+                                </div>
+                                <a href="https://www.mediafire.com/file/u36ki376kxl997q/decision_sense.apk/file" target="_blank" class="inline-flex items-center justify-center gap-2 w-full py-4 bg-white text-black hover:bg-orange-500 hover:text-white rounded-xl transition-colors font-bold tracking-wide">
+                                    <i data-lucide="download" class="w-5 h-5"></i> Download APK
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="certifications" class="py-32 relative">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16 reveal">
+                    <h2 class="font-heading text-4xl md:text-5xl font-bold text-white mb-6">Verified <span class="text-gradient">Credentials</span></h2>
+                    <div class="w-20 h-1 bg-accent mx-auto rounded"></div>
+                    <p class="mt-6 text-slate-400 max-w-2xl mx-auto text-lg">Click any cryptographic badge below to access the secure <strong>Interactive Hybrid Document Preview</strong>.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Certifications Data Array ported from original -->
+                    <!-- AWS -->
+                    <div data-file="AWS_Academy_Graduate_AWS_Academy_Cloud_Foundations_Badge20230726.pdf" data-issuer="Amazon Web Services (AWS)" data-hours="20 Hours" data-issued="July 2023" data-icon="cloud" class="cert-card glass-card p-6 rounded-2xl border border-white/10 hover:border-orange-500/50 transition-all cursor-pointer group reveal">
+                        <div class="flex justify-between items-start mb-6">
+                            <div class="w-12 h-12 bg-orange-500/10 text-orange-400 rounded-xl flex items-center justify-center group-hover:bg-orange-500 group-hover:text-white transition-colors">
+                                <i data-lucide="cloud" class="w-6 h-6"></i>
+                            </div>
+                            <span class="text-xs bg-white/5 text-slate-300 px-3 py-1.5 rounded-full flex items-center gap-1 border border-white/10 group-hover:bg-orange-500 group-hover:text-white transition-all">
+                                <i data-lucide="eye" class="w-3.5 h-3.5"></i> Inspect
+                            </span>
+                        </div>
+                        <h3 class="font-bold text-white text-lg leading-tight mb-2">AWS Cloud Foundations</h3>
+                        <p class="text-sm text-slate-400 mb-4">Amazon Web Services</p>
+                        <div class="text-xs font-mono text-slate-500 bg-dark/50 inline-block px-2 py-1 rounded">20 Hours • Jul 2023</div>
+                    </div>
+
+                    <!-- Red Hat 1 -->
+                    <div data-file="CourseAttendance20251213-32-5u8cfk.pdf" data-issuer="Red Hat" data-hours="32 Hours" data-issued="Dec 2025" data-icon="terminal" class="cert-card glass-card p-6 rounded-2xl border border-white/10 hover:border-red-500/50 transition-all cursor-pointer group reveal" style="transition-delay: 0.1s;">
+                        <div class="flex justify-between items-start mb-6">
+                            <div class="w-12 h-12 bg-red-500/10 text-red-400 rounded-xl flex items-center justify-center group-hover:bg-red-500 group-hover:text-white transition-colors">
+                                <i data-lucide="terminal" class="w-6 h-6"></i>
+                            </div>
+                            <span class="text-xs bg-white/5 text-slate-300 px-3 py-1.5 rounded-full flex items-center gap-1 border border-white/10 group-hover:bg-red-500 group-hover:text-white transition-all">
+                                <i data-lucide="eye" class="w-3.5 h-3.5"></i> Inspect
+                            </span>
+                        </div>
+                        <h3 class="font-bold text-white text-lg leading-tight mb-2">Python Programming (AD141)</h3>
+                        <p class="text-sm text-slate-400 mb-4">Red Hat</p>
+                        <div class="text-xs font-mono text-slate-500 bg-dark/50 inline-block px-2 py-1 rounded">32 Hours • Dec 2025</div>
+                    </div>
+
+                    <!-- Cisco AI -->
+                    <div data-file="IntrotoModernAIUpdate20251219-32-tesfxq.pdf" data-issuer="Cisco Networking Academy" data-hours="Verified Certificate" data-issued="Dec 2025" data-icon="bot" class="cert-card glass-card p-6 rounded-2xl border border-white/10 hover:border-blue-500/50 transition-all cursor-pointer group reveal" style="transition-delay: 0.2s;">
+                        <div class="flex justify-between items-start mb-6">
+                            <div class="w-12 h-12 bg-blue-500/10 text-blue-400 rounded-xl flex items-center justify-center group-hover:bg-blue-500 group-hover:text-white transition-colors">
+                                <i data-lucide="bot" class="w-6 h-6"></i>
+                            </div>
+                            <span class="text-xs bg-white/5 text-slate-300 px-3 py-1.5 rounded-full flex items-center gap-1 border border-white/10 group-hover:bg-blue-500 group-hover:text-white transition-all">
+                                <i data-lucide="eye" class="w-3.5 h-3.5"></i> Inspect
+                            </span>
+                        </div>
+                        <h3 class="font-bold text-white text-lg leading-tight mb-2">Intro to Modern AI</h3>
+                        <p class="text-sm text-slate-400 mb-4">Cisco Networking Academy</p>
+                        <div class="text-xs font-mono text-slate-500 bg-dark/50 inline-block px-2 py-1 rounded">Verified • Dec 2025</div>
+                    </div>
+
+                    <!-- Ethical Hacker -->
+                    <div data-file="Ethical_Hacker_certificate_rudrapratap43730_gmail_com_edb8e111_3767.pdf" data-issuer="Cisco / SAGE" data-hours="Verified Certificate" data-issued="Dec 2025" data-icon="shield-check" class="cert-card glass-card p-6 rounded-2xl border border-white/10 hover:border-emerald-500/50 transition-all cursor-pointer group reveal">
+                        <div class="flex justify-between items-start mb-6">
+                            <div class="w-12 h-12 bg-emerald-500/10 text-emerald-400 rounded-xl flex items-center justify-center group-hover:bg-emerald-500 group-hover:text-white transition-colors">
+                                <i data-lucide="shield-check" class="w-6 h-6"></i>
+                            </div>
+                            <span class="text-xs bg-white/5 text-slate-300 px-3 py-1.5 rounded-full flex items-center gap-1 border border-white/10 group-hover:bg-emerald-500 group-hover:text-white transition-all">
+                                <i data-lucide="eye" class="w-3.5 h-3.5"></i> Inspect
+                            </span>
+                        </div>
+                        <h3 class="font-bold text-white text-lg leading-tight mb-2">Ethical Hacker</h3>
+                        <p class="text-sm text-slate-400 mb-4">Cisco / SAGE University</p>
+                        <div class="text-xs font-mono text-slate-500 bg-dark/50 inline-block px-2 py-1 rounded">Verified • Dec 2025</div>
+                    </div>
+
+                    <!-- Machine Learning IoT -->
+                    <div data-file="IMG_9674.jpeg" data-issuer="The SAGE Group" data-hours="Winter School" data-issued="March 2025" data-icon="cpu" class="cert-card glass-card p-6 rounded-2xl border border-white/10 hover:border-purple-500/50 transition-all cursor-pointer group reveal" style="transition-delay: 0.1s;">
+                        <div class="flex justify-between items-start mb-6">
+                            <div class="w-12 h-12 bg-purple-500/10 text-purple-400 rounded-xl flex items-center justify-center group-hover:bg-purple-500 group-hover:text-white transition-colors">
+                                <i data-lucide="cpu" class="w-6 h-6"></i>
+                            </div>
+                            <span class="text-xs bg-white/5 text-slate-300 px-3 py-1.5 rounded-full flex items-center gap-1 border border-white/10 group-hover:bg-purple-500 group-hover:text-white transition-all">
+                                <i data-lucide="eye" class="w-3.5 h-3.5"></i> Inspect
+                            </span>
+                        </div>
+                        <h3 class="font-bold text-white text-lg leading-tight mb-2">ML with IoT Apps</h3>
+                        <p class="text-sm text-slate-400 mb-4">SAGE Winter School</p>
+                        <div class="text-xs font-mono text-slate-500 bg-dark/50 inline-block px-2 py-1 rounded">Completed • Mar 2025</div>
+                    </div>
+
+                    <!-- Red Hat Java -->
+                    <div data-file="CourseAttendance20251213-31-4bug5x.pdf" data-issuer="Red Hat" data-hours="32 Hours" data-issued="Dec 2025" data-icon="coffee" class="cert-card glass-card p-6 rounded-2xl border border-white/10 hover:border-red-500/50 transition-all cursor-pointer group reveal" style="transition-delay: 0.2s;">
+                        <div class="flex justify-between items-start mb-6">
+                            <div class="w-12 h-12 bg-red-500/10 text-red-400 rounded-xl flex items-center justify-center group-hover:bg-red-500 group-hover:text-white transition-colors">
+                                <i data-lucide="coffee" class="w-6 h-6"></i>
+                            </div>
+                            <span class="text-xs bg-white/5 text-slate-300 px-3 py-1.5 rounded-full flex items-center gap-1 border border-white/10 group-hover:bg-red-500 group-hover:text-white transition-all">
+                                <i data-lucide="eye" class="w-3.5 h-3.5"></i> Inspect
+                            </span>
+                        </div>
+                        <h3 class="font-bold text-white text-lg leading-tight mb-2">App Dev I: Java EE</h3>
+                        <p class="text-sm text-slate-400 mb-4">Red Hat</p>
+                        <div class="text-xs font-mono text-slate-500 bg-dark/50 inline-block px-2 py-1 rounded">32 Hours • Dec 2025</div>
+                    </div>
+                </div>
+
+                <div class="mt-12 text-center reveal">
+                     <div class="inline-flex items-center justify-center gap-3 px-6 py-3 glass-panel border border-white/10 rounded-full text-slate-300 text-sm font-medium">
+                         <i data-lucide="award" class="w-5 h-5 text-accent"></i>
+                         Also Certified: <span class="text-white font-bold">Azure 900 Fundamentals & MSME Adv Excel</span>
+                     </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="ai-playground" class="py-32 relative border-y border-white/5">
+            <!-- Background glow -->
+            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-3/4 h-3/4 bg-accent2/10 blur-[120px] rounded-full pointer-events-none"></div>
+
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="text-center mb-16 reveal">
+                    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-accent2/20 border border-accent2/30 text-accent2 font-semibold text-sm mb-4">
+                        <i data-lucide="sparkles" class="w-4 h-4 animate-pulse"></i> Gemini AI Powered
+                    </div>
+                    <h2 class="font-heading text-4xl md:text-5xl font-bold text-white mb-6">AI Recruiter <span class="text-gradient">Hub</span></h2>
+                    <div class="w-20 h-1 bg-accent2 mx-auto rounded"></div>
+                    <p class="mt-6 text-slate-400 max-w-2xl mx-auto text-lg">Query my professional dataset in real-time or analyze how my skills map to your specific Job Description.</p>
+                </div>
+
+                <!-- Playground UI Container -->
+                <div class="glass-card rounded-3xl border border-white/10 shadow-2xl overflow-hidden flex flex-col md:flex-row h-[650px] max-w-5xl mx-auto reveal tilt-wrapper">
+                    
+                    <!-- Tab Menu -->
+                    <div class="w-full md:w-64 bg-dark/40 border-b md:border-b-0 md:border-r border-white/5 p-4 flex md:flex-col gap-3 flex-shrink-0 z-20 relative">
+                        <button id="tab-chat-btn" class="flex-1 md:flex-initial flex items-center justify-center md:justify-start gap-3 px-5 py-4 rounded-xl font-bold transition text-sm bg-accent2 text-white shadow-[0_0_20px_rgba(139,92,246,0.3)]">
+                            <i data-lucide="terminal-square" class="w-5 h-5"></i>
+                            <span class="hidden md:inline tracking-wide">Terminal Chat</span>
+                        </button>
+                        <button id="tab-matcher-btn" class="flex-1 md:flex-initial flex items-center justify-center md:justify-start gap-3 px-5 py-4 rounded-xl font-bold transition text-sm text-slate-400 hover:bg-white/5 hover:text-white border border-transparent hover:border-white/10">
+                            <i data-lucide="briefcase" class="w-5 h-5"></i>
+                            <span class="hidden md:inline tracking-wide">JD Analyzer</span>
+                        </button>
+                    </div>
+
+                    <!-- Tab Contents -->
+                    <div class="flex-grow flex flex-col h-full overflow-hidden relative bg-black/20">
+                        
+                        <!-- Tab 1: Terminal Chatbot -->
+                        <div id="playground-chat" class="flex flex-col h-full flex-grow overflow-hidden">
+                            <div class="px-6 py-5 border-b border-white/5 bg-dark/40 flex items-center justify-between backdrop-blur-md">
+                                <div class="flex items-center gap-4">
+                                    <div class="relative">
+                                        <div class="w-12 h-12 rounded-xl bg-accent2/20 text-accent2 border border-accent2/30 flex items-center justify-center font-black text-lg">KS</div>
+                                        <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-dark animate-pulse"></div>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-white tracking-wide">Virtual Kunal</h4>
+                                        <p class="text-xs text-accent font-mono">System Online. Awaiting queries...</p>
+                                    </div>
+                                </div>
+                                <button id="clear-chat-btn" class="p-2.5 text-slate-400 hover:text-white hover:bg-white/10 rounded-lg transition border border-transparent hover:border-white/10" title="Reset Session">
+                                    <i data-lucide="rotate-ccw" class="w-5 h-5"></i>
+                                </button>
+                            </div>
+
+                            <div id="chat-messages" class="flex-grow overflow-y-auto p-6 space-y-6 font-mono text-sm scroll-smooth">
+                                <!-- Greeting bubble -->
+                                <div class="flex items-start gap-4 max-w-[85%]">
+                                    <div class="w-8 h-8 rounded-lg bg-accent2/20 text-accent2 border border-accent2/30 flex items-center justify-center font-bold text-xs flex-shrink-0 mt-1">AI</div>
+                                    <div class="glass-panel p-4 rounded-2xl rounded-tl-none border-white/10 text-slate-300 leading-relaxed">
+                                        <span class="text-accent">root@kunal-portfolio:~$</span> init ai_representative<br>
+                                        Hello. I represent Kunal's professional dataset. You can ask me about his Flutter capabilities, Backend knowledge, Red Hat systems, or general availability.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="px-6 py-3 flex flex-wrap gap-2 border-t border-white/5 bg-dark/40 overflow-x-auto select-none no-scrollbar">
+                                <button class="suggestion-chip text-xs px-4 py-2 bg-white/5 hover:bg-accent2/20 text-slate-300 hover:text-white rounded-full border border-white/10 transition font-medium tracking-wide whitespace-nowrap">View major projects</button>
+                                <button class="suggestion-chip text-xs px-4 py-2 bg-white/5 hover:bg-accent2/20 text-slate-300 hover:text-white rounded-full border border-white/10 transition font-medium tracking-wide whitespace-nowrap">List Red Hat certs</button>
+                                <button class="suggestion-chip text-xs px-4 py-2 bg-white/5 hover:bg-accent2/20 text-slate-300 hover:text-white rounded-full border border-white/10 transition font-medium tracking-wide whitespace-nowrap">Proficiency in Dart?</button>
+                            </div>
+
+                            <form id="chat-form" class="p-4 border-t border-white/10 bg-dark/60 flex gap-3 items-center backdrop-blur-md">
+                                <input type="text" id="chat-input" placeholder="Enter query..." class="flex-grow px-5 py-4 rounded-xl bg-black/50 border border-white/10 focus:outline-none focus:border-accent2 text-white text-sm font-mono placeholder-slate-500 transition" required autocomplete="off">
+                                <button type="submit" id="chat-send-btn" class="p-4 bg-accent2 text-white rounded-xl hover:bg-purple-600 transition flex-shrink-0 shadow-[0_0_15px_rgba(139,92,246,0.3)]">
+                                    <i data-lucide="send" class="w-5 h-5"></i>
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- Tab 2: JD Analyzer -->
+                        <div id="playground-matcher" class="hidden flex flex-col h-full flex-grow overflow-hidden p-6">
+                            <div class="flex-grow flex flex-col md:flex-row gap-6 overflow-hidden">
+                                <div class="w-full md:w-1/2 flex flex-col gap-4 h-full">
+                                    <label for="jd-textarea" class="text-sm font-bold text-slate-300 flex items-center gap-2 uppercase tracking-wider">
+                                        <i data-lucide="scan-line" class="w-4 h-4 text-accent"></i> Input Job Description
+                                    </label>
+                                    <textarea id="jd-textarea" placeholder="Paste JD requirements here. The AI will cross-reference this with Kunal's data..." class="flex-grow p-5 bg-black/30 border border-white/10 rounded-2xl focus:outline-none focus:border-accent text-slate-300 text-sm resize-none font-mono placeholder-slate-600 transition" minlength="10"></textarea>
+                                    <button id="analyze-btn" class="w-full py-4 bg-white text-black font-bold rounded-xl hover:bg-accent hover:text-white transition-all flex items-center justify-center gap-2 group">
+                                        <i data-lucide="cpu" class="w-5 h-5 group-hover:animate-pulse"></i> Execute Analysis
+                                    </button>
+                                </div>
+
+                                <div class="w-full md:w-1/2 flex flex-col gap-4 h-full border-t md:border-t-0 md:border-l border-white/10 pt-6 md:pt-0 md:pl-6 overflow-hidden">
+                                    <h5 class="text-sm font-bold text-slate-300 flex items-center gap-2 uppercase tracking-wider flex-shrink-0">
+                                        <i data-lucide="pie-chart" class="w-4 h-4 text-accent2"></i> Output Report
+                                    </h5>
+                                    <div id="analysis-output" class="flex-grow bg-black/30 border border-white/10 rounded-2xl p-6 overflow-y-auto text-sm text-slate-300 leading-relaxed font-mono">
+                                        <div class="flex flex-col items-center justify-center text-center h-full text-slate-500 gap-4">
+                                            <i data-lucide="radar" class="w-16 h-16 opacity-30 animate-[spin_4s_linear_infinite]"></i>
+                                            <p>Awaiting input parameters to generate compatibility matrix.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="py-32 relative">
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 reveal">
+                <div class="glass-card rounded-[3rem] p-10 md:p-20 text-center shadow-2xl relative overflow-hidden border border-white/10">
+                    <div class="absolute inset-0 bg-gradient-to-br from-accent/20 to-accent2/20"></div>
+                    <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(white 1px, transparent 1px); background-size: 30px 30px;"></div>
+                    
+                    <div class="relative z-10">
+                        <h2 class="font-heading text-4xl md:text-6xl font-black text-white mb-6 tracking-tight">Initiate <span class="text-gradient">Connection</span></h2>
+                        <p class="text-slate-300 text-lg md:text-xl mb-12 max-w-2xl mx-auto font-light leading-relaxed">
+                            Currently exploring full-time opportunities to engineer scalable mobile architectures. My inbox is open for collaborations, inquiries, or architectural discussions.
+                        </p>
+                        <div class="flex flex-col sm:flex-row justify-center gap-6">
+                            <a href="mailto:Kunalsinghsisodiya9378@gmail.com" class="inline-flex items-center justify-center gap-3 px-10 py-5 bg-white text-black rounded-2xl font-bold hover:scale-105 transition-transform shadow-[0_0_20px_rgba(255,255,255,0.2)] text-lg">
+                                <i data-lucide="mail" class="w-6 h-6"></i> Send Transmission
+                            </a>
+                            <a href="tel:7389164258" class="inline-flex items-center justify-center gap-3 px-10 py-5 glass-panel text-white border border-white/20 rounded-2xl font-bold hover:bg-white/10 transition-colors text-lg">
+                                <i data-lucide="phone" class="w-6 h-6"></i> +91 73891 64258
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="glass-panel border-t border-white/5 py-12">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="font-heading text-3xl font-black text-white tracking-tighter">
+                    K<span class="text-accent">.</span>
+                </div>
+                
+                <div class="flex items-center gap-8">
+                    <a href="https://github.com/Hcxui" target="_blank" class="text-slate-400 hover:text-white transition transform hover:scale-110">
+                        <i data-lucide="github" class="w-6 h-6"></i>
+                    </a>
+                    <a href="mailto:Kunalsinghsisodiya9378@gmail.com" class="text-slate-400 hover:text-white transition transform hover:scale-110">
+                        <i data-lucide="mail" class="w-6 h-6"></i>
+                    </a>
+                    <div class="flex items-center gap-2 text-slate-400 bg-dark/50 px-4 py-2 rounded-full border border-white/5">
+                         <i data-lucide="map-pin" class="w-4 h-4 text-accent"></i>
+                         <span class="text-sm font-medium tracking-wide">Pithampur, MP</span>
+                    </div>
+                </div>
+                
+                <div class="text-slate-500 text-sm font-mono">
+                    &copy; <script>document.write(new Date().getFullYear())</script> Kunal Singh Sisodiya.
+                </div>
+            </div>
+        </footer>
+    </main>
+
+    <div id="cert-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-dark/90 backdrop-blur-xl hidden opacity-0 transition-all duration-500">
+        <div class="glass-card rounded-3xl w-full max-w-5xl h-[85vh] flex flex-col shadow-2xl overflow-hidden transform scale-95 transition-all duration-500 border border-white/10 relative">
+            
+            <div class="absolute inset-0 bg-gradient-to-br from-accent/5 to-accent2/5 pointer-events-none"></div>
+
+            <!-- Modal Header -->
+            <div class="px-6 py-5 bg-black/40 border-b border-white/10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 flex-shrink-0 relative z-10 backdrop-blur-md">
+                <div class="max-w-full sm:max-w-[55%]">
+                    <h3 id="modal-cert-title" class="font-heading font-bold text-white text-lg md:text-xl leading-tight truncate">Document Inspector</h3>
+                    <p id="modal-cert-subtitle" class="text-xs font-mono text-accent mt-1 truncate">Verifying Cryptographic Signature...</p>
+                </div>
+                
+                <div id="modal-tab-wrapper" class="flex items-center bg-dark/60 p-1.5 rounded-xl border border-white/5 self-start sm:self-auto">
+                    <button id="modal-tab-smart" class="px-4 py-2 rounded-lg text-xs font-bold bg-white text-black shadow-sm flex items-center gap-2 transition-all">
+                        <i data-lucide="cpu" class="w-4 h-4"></i> Smart Render
+                    </button>
+                    <button id="modal-tab-doc" class="px-4 py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-white flex items-center gap-2 transition-all">
+                        <i data-lucide="file-text" class="w-4 h-4"></i> Raw File
+                    </button>
+                </div>
+                <div class="flex items-center gap-3 self-end sm:self-auto">
+                    <a id="modal-cert-download" href="#" target="_blank" download class="flex items-center gap-2 px-4 py-2 bg-accent/20 hover:bg-accent/30 text-accent border border-accent/30 rounded-xl text-xs md:text-sm font-bold transition-all">
+                        <i data-lucide="download" class="w-4 h-4"></i> Extract
+                    </a>
+                    <button id="close-modal-btn" class="p-2 text-slate-400 hover:text-white hover:bg-white/10 rounded-xl transition-all border border-transparent hover:border-white/10">
+                        <i data-lucide="x" class="w-6 h-6"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="flex-grow relative overflow-auto flex items-center justify-center p-4 sm:p-8 z-10">
+                
+                <!-- Dynamic Smart Replica -->
+                <div id="modal-smart-container" class="w-full h-full flex items-center justify-center p-2 perspective-1000">
+                    <!-- Injected via JS -->
+                </div>
+
+                <!-- PDF Canvas -->
+                <div id="modal-canvas-container" class="w-full h-full overflow-auto flex items-start justify-center hidden p-2">
+                    <canvas id="modal-pdf-canvas" class="max-w-full shadow-[0_0_50px_rgba(255,255,255,0.1)] rounded-xl border border-white/10"></canvas>
+                </div>
+
+                <!-- Fallbacks -->
+                <iframe id="modal-pdf-viewer" class="w-full h-full rounded-xl border border-white/10 shadow-sm hidden bg-white" src="" frameborder="0"></iframe>
+                
+                <div id="modal-img-container" class="w-full h-full flex items-center justify-center overflow-auto hidden">
+                    <img id="modal-img-viewer" class="max-w-full max-h-full rounded-xl object-contain shadow-2xl border border-white/10" src="" alt="View">
+                </div>
+
+                <div id="iframe-mobile-tip" class="hidden absolute bottom-6 left-6 right-6 bg-accent2 text-white p-4 rounded-xl flex items-center justify-between gap-3 text-sm z-20 shadow-2xl font-medium">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="info" class="w-5 h-5 text-white flex-shrink-0 animate-bounce"></i>
+                        <span>Mobile View: Use <strong>Extract</strong> to view native PDF if rendering fails.</span>
+                    </div>
+                </div>
+
+                <!-- Loading State -->
+                <div id="modal-loader" class="absolute inset-0 flex flex-col items-center justify-center bg-dark/80 backdrop-blur-sm gap-4 z-50">
+                    <div class="relative w-16 h-16">
+                        <div class="absolute inset-0 rounded-full border-4 border-white/10 border-t-accent animate-spin"></div>
+                        <div class="absolute inset-2 rounded-full border-4 border-white/10 border-b-accent2 animate-[spin_2s_linear_infinite_reverse]"></div>
+                    </div>
+                    <p class="text-sm font-mono text-accent tracking-widest uppercase">Rendering Document...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 1. Initialize Icons
+        lucide.createIcons();
+
+        // 2. Custom Cursor Logic
+        const cursorDot = document.getElementById('cursor-dot');
+        const cursorOutline = document.getElementById('cursor-outline');
+        
+        window.addEventListener('mousemove', (e) => {
+            const posX = e.clientX;
+            const posY = e.clientY;
+            
+            cursorDot.style.left = `${posX}px`;
+            cursorDot.style.top = `${posY}px`;
+            
+            // Add slight delay for outline for cool effect
+            cursorOutline.animate({
+                left: `${posX}px`,
+                top: `${posY}px`
+            }, { duration: 150, fill: 'forwards' });
+        });
+
+        // Add hover effects for cursor on buttons/links
+        document.querySelectorAll('a, button, .cert-card').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursorOutline.style.width = '60px';
+                cursorOutline.style.height = '60px';
+                cursorOutline.style.borderColor = '#8b5cf6';
+                cursorOutline.style.backgroundColor = 'rgba(139, 92, 246, 0.1)';
+            });
+            el.addEventListener('mouseleave', () => {
+                cursorOutline.style.width = '40px';
+                cursorOutline.style.height = '40px';
+                cursorOutline.style.borderColor = 'rgba(6, 182, 212, 0.5)';
+                cursorOutline.style.backgroundColor = 'transparent';
+            });
+        });
+
+        // 3. Three.js Interactive Background (4D Particle Network)
+        const canvas = document.getElementById('bg-canvas');
+        const scene = new THREE.Scene();
+        // Cyberpunk fog for depth
+        scene.fog = new THREE.FogExp2('#030712', 0.05);
+        
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+        
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+        // Create particles
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesCount = 400; // Increased count
+        const posArray = new Float32Array(particlesCount * 3);
+        
+        for(let i = 0; i < particlesCount * 3; i++) {
+            // Spread particles over a large area
+            posArray[i] = (Math.random() - 0.5) * 15;
+        }
+        
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        
+        // Custom Shader Material for glowing dots
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 0.02,
+            color: '#06b6d4',
+            transparent: true,
+            opacity: 0.8,
+            blending: THREE.AdditiveBlending
+        });
+        
+        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particlesMesh);
+
+        // Cyberpunk Moving Grid Floor
+        const gridHelper = new THREE.GridHelper(100, 50, 0x06b6d4, 0x8b5cf6);
+        gridHelper.position.y = -3;
+        gridHelper.material.opacity = 0.2;
+        gridHelper.material.transparent = true;
+        scene.add(gridHelper);
+
+        // Lines connecting close particles
+        const lineMaterial = new THREE.LineBasicMaterial({
+            color: '#8b5cf6',
+            transparent: true,
+            opacity: 0.15
+        });
+
+        camera.position.z = 5;
+
+        // Mouse interaction for 3D
+        let mouseX = 0;
+        let mouseY = 0;
+        let targetX = 0;
+        let targetY = 0;
+        const windowHalfX = window.innerWidth / 2;
+        const windowHalfY = window.innerHeight / 2;
+
+        document.addEventListener('mousemove', (event) => {
+            mouseX = (event.clientX - windowHalfX);
+            mouseY = (event.clientY - windowHalfY);
+        });
+
+        // Animation Loop
+        const clock = new THREE.Clock();
+        function animateCanvas() {
+            requestAnimationFrame(animateCanvas);
+            const elapsedTime = clock.getElapsedTime();
+
+            // Rotate particles slowly
+            particlesMesh.rotation.y = elapsedTime * 0.02;
+
+            // Animate Grid for infinite scroll effect (Cyberpunk feel)
+            gridHelper.position.z = (elapsedTime * 2) % 2;
+
+            // Follow mouse with easing
+            targetX = mouseX * 0.001;
+            targetY = mouseY * 0.001;
+            
+            camera.position.x += (targetX - camera.position.x) * 0.02;
+            camera.position.y += (-targetY - camera.position.y) * 0.02;
+            camera.lookAt(scene.position);
+
+            renderer.render(scene, camera);
+        }
+        animateCanvas();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // 4. GSAP & Vanilla Scroll Reveals
+        gsap.registerPlugin(ScrollTrigger);
+        
+        // Heroic Entrance Animation (Superhero Landing)
+        window.addEventListener('load', () => {
+            const heroTl = gsap.timeline();
+            
+            // Initial state
+            gsap.set(".hero-gsap-target", { opacity: 0, y: 50, scale: 0.95 });
+            gsap.set(".hero-3d-target", { opacity: 0, scale: 0.5, rotation: -15 });
+            
+            // Epic reveal
+            heroTl.to(".hero-gsap-target", {
+                opacity: 1,
+                y: 0,
+                scale: 1,
+                duration: 1.5,
+                ease: "expo.out",
+                stagger: 0.2
+            })
+            .to(".hero-3d-target", {
+                opacity: 1,
+                scale: 1,
+                rotation: 0,
+                duration: 2,
+                ease: "elastic.out(1, 0.5)"
+            }, "-=1.2");
+        });
+
+        // Navbar blur effect on scroll
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('bg-dark/80', 'backdrop-blur-lg', 'border-b', 'border-white/10');
+            } else {
+                navbar.classList.remove('bg-dark/80', 'backdrop-blur-lg', 'border-b', 'border-white/10');
+            }
+        });
+
+        // Intersection Observer for .reveal classes
+        const revealElements = document.querySelectorAll('.reveal');
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        revealElements.forEach(el => revealObserver.observe(el));
+
+        // Vanilla JS 3D Tilt Effect for cards
+        const tiltElements = document.querySelectorAll('.tilt-element');
+        tiltElements.forEach(el => {
+            el.addEventListener('mousemove', (e) => {
+                const rect = el.getBoundingClientRect();
+                const x = e.clientX - rect.left; // x position within the element.
+                const y = e.clientY - rect.top;  // y position within the element.
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const rotateX = ((y - centerY) / centerY) * -10; // Max rotation 10deg
+                const rotateY = ((x - centerX) / centerX) * 10;
+                
+                el.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+            });
+            
+            el.addEventListener('mouseleave', () => {
+                el.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+            });
+        });
+
+        // Mobile Menu
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+        btn.addEventListener('click', () => menu.classList.toggle('hidden'));
+        menu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => menu.classList.add('hidden'));
+        });
+
+        // 5. Ported Certificate Logic (Updated for Dark Theme)
+        const certCards = document.querySelectorAll('.cert-card');
+        const certModal = document.getElementById('cert-modal');
+        const modalContainer = certModal.querySelector('.transform');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const modalTitle = document.getElementById('modal-cert-title');
+        const modalSubtitle = document.getElementById('modal-cert-subtitle');
+        const modalDownload = document.getElementById('modal-cert-download');
+        
+        const smartTab = document.getElementById('modal-tab-smart');
+        const docTab = document.getElementById('modal-tab-doc');
+        const smartContainer = document.getElementById('modal-smart-container');
+        const pdfViewer = document.getElementById('modal-pdf-viewer');
+        const canvasContainer = document.getElementById('modal-canvas-container');
+        const pdfCanvas = document.getElementById('modal-pdf-canvas');
+        const imgContainer = document.getElementById('modal-img-container');
+        const imgViewer = document.getElementById('modal-img-viewer');
+        const modalLoader = document.getElementById('modal-loader');
+        const mobileTipBanner = document.getElementById('iframe-mobile-tip');
+
+        const isMobileOrTablet = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        let activeFile = '';
+
+        // Upgraded Dark-Theme Smart Replica Builder
+        function generateSmartReplica(title, issuer, hours, date, iconName) {
+            let borderStyle = "border-cyan-500/50 shadow-[0_0_30px_rgba(6,182,212,0.2)]";
+            let brandAccent = "text-cyan-400";
+            let iconColor = "text-cyan-400";
+            let bgAccent = "from-cyan-900/20";
+            
+            const lowerIssuer = issuer.toLowerCase();
+            if (lowerIssuer.includes("red hat")) {
+                borderStyle = "border-red-500/50 shadow-[0_0_30px_rgba(239,68,68,0.2)]";
+                brandAccent = "text-red-400"; iconColor = "text-red-500"; bgAccent = "from-red-900/20";
+            } else if (lowerIssuer.includes("aws") || lowerIssuer.includes("amazon")) {
+                borderStyle = "border-orange-500/50 shadow-[0_0_30px_rgba(249,115,22,0.2)]";
+                brandAccent = "text-orange-400"; iconColor = "text-orange-500"; bgAccent = "from-orange-900/20";
+            } else if (lowerIssuer.includes("cisco")) {
+                borderStyle = "border-blue-500/50 shadow-[0_0_30px_rgba(59,130,246,0.2)]";
+                brandAccent = "text-blue-400"; iconColor = "text-blue-500"; bgAccent = "from-blue-900/20";
+            } else if (lowerIssuer.includes("ai")) {
+                borderStyle = "border-purple-500/50 shadow-[0_0_30px_rgba(168,85,247,0.2)]";
+                brandAccent = "text-purple-400"; iconColor = "text-purple-500"; bgAccent = "from-purple-900/20";
+            }
+
+            return `
+                <div class="w-full max-w-2xl mx-auto p-1 rounded-3xl bg-gradient-to-br border ${borderStyle} relative overflow-hidden transition-all duration-500 bg-dark tilt-element">
+                    <div class="absolute top-0 right-0 w-64 h-64 ${bgAccent} to-transparent rounded-full blur-[80px] pointer-events-none"></div>
+                    <div class="absolute bottom-0 left-0 w-64 h-64 ${bgAccent} to-transparent rounded-full blur-[80px] pointer-events-none"></div>
+                    
+                    <div class="border border-white/5 bg-black/60 p-8 md:p-10 rounded-[1.4rem] flex flex-col items-center text-center relative z-10 backdrop-blur-xl h-full">
+                        
+                        <div class="flex items-center gap-2 mb-6 bg-white/5 px-4 py-1.5 rounded-full border border-white/10">
+                            <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+                            <span class="text-[10px] font-mono tracking-widest text-slate-300 uppercase">Cryptographically Verified</span>
+                        </div>
+
+                        <div class="mb-6 p-4 rounded-2xl bg-white/5 border border-white/10">
+                            <i data-lucide="${iconName || 'award'}" class="w-12 h-12 ${iconColor}"></i>
+                        </div>
+
+                        <p class="text-slate-400 font-mono text-xs mb-8 tracking-widest uppercase border-b border-white/10 pb-2 w-full">Issued to</p>
+
+                        <h3 class="font-heading text-4xl font-black text-white tracking-tight mb-2">Kunal Singh Sisodiya</h3>
+                        <p class="text-sm text-slate-500 max-w-md mb-8 leading-relaxed font-mono">Authentication confirmed for academic and technical compliance in the specialty program of:</p>
+
+                        <h2 class="text-2xl md:text-3xl font-bold ${brandAccent} mb-10 leading-snug w-full border-y border-white/10 py-6 bg-white/5 rounded-xl">${title}</h2>
+
+                        <div class="grid grid-cols-2 gap-4 w-full mt-auto text-left">
+                            <div class="bg-dark/50 p-4 rounded-xl border border-white/5">
+                                <span class="text-[10px] font-mono text-slate-500 uppercase tracking-wider block mb-1">Authorized Node</span>
+                                <span class="text-sm font-bold text-white">${issuer}</span>
+                            </div>
+                            <div class="bg-dark/50 p-4 rounded-xl border border-white/5">
+                                <span class="text-[10px] font-mono text-slate-500 uppercase tracking-wider block mb-1">Metrics / Timestamp</span>
+                                <span class="text-sm text-slate-300">${hours} • ${date}</span>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between items-end w-full mt-6">
+                            <div class="text-left">
+                                <span class="text-[10px] font-mono text-slate-600 block">Hash ID: KSS-${Math.random().toString(36).substr(2, 9).toUpperCase()}-${date.replace(/[^a-zA-Z0-9]/g, '') || '2025'}</span>
+                            </div>
+                            <div class="text-right flex items-center gap-2 text-green-400 font-mono text-xs">
+                                <i data-lucide="check-circle" class="w-4 h-4"></i> Secure
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            `;
+        }
+
+        async function openCertificate(file, title, issuer, hours, date, icon) {
+            activeFile = file;
+            modalTitle.textContent = title;
+            modalSubtitle.textContent = `Node: ${issuer} | Timestamp: ${date}`;
+            modalDownload.href = file;
+
+            smartContainer.innerHTML = generateSmartReplica(title, issuer, hours, date, icon);
+            lucide.createIcons();
+            
+            // Re-bind tilt for dynamic element
+            const newTilt = smartContainer.querySelector('.tilt-element');
+            if(newTilt) {
+                 newTilt.addEventListener('mousemove', (e) => {
+                    const rect = newTilt.getBoundingClientRect();
+                    const rotateX = (((e.clientY - rect.top) - rect.height / 2) / (rect.height / 2)) * -5;
+                    const rotateY = (((e.clientX - rect.left) - rect.width / 2) / (rect.width / 2)) * 5;
+                    newTilt.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+                });
+                newTilt.addEventListener('mouseleave', () => newTilt.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`);
+            }
+
+            switchModalTab('smart');
+
+            certModal.classList.remove('hidden');
+            setTimeout(() => {
+                certModal.classList.remove('opacity-0');
+                modalContainer.classList.remove('scale-95');
+                modalContainer.classList.add('scale-100');
+            }, 10);
+        }
+
+        async function switchModalTab(tabType) {
+            modalLoader.classList.add('hidden');
+            smartContainer.classList.add('hidden');
+            pdfViewer.classList.add('hidden');
+            canvasContainer.classList.add('hidden');
+            imgContainer.classList.add('hidden');
+            mobileTipBanner.classList.add('hidden');
+
+            const inactiveClasses = "px-4 py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-white flex items-center gap-2 transition-all";
+            const activeClasses = "px-4 py-2 rounded-lg text-xs font-bold bg-white text-black shadow-sm flex items-center gap-2 transition-all";
+
+            smartTab.className = inactiveClasses;
+            docTab.className = inactiveClasses;
+
+            if (tabType === 'smart') {
+                smartTab.className = activeClasses;
+                smartContainer.classList.remove('hidden');
+            } else {
+                docTab.className = activeClasses;
+                modalLoader.classList.remove('hidden');
+
+                const fileExt = activeFile.split('.').pop().toLowerCase();
+                
+                if (['jpg', 'jpeg', 'png'].includes(fileExt)) {
+                    imgViewer.src = activeFile;
+                    imgViewer.onload = () => { modalLoader.classList.add('hidden'); imgContainer.classList.remove('hidden'); };
+                    imgViewer.onerror = () => { modalLoader.classList.add('hidden'); imgContainer.classList.remove('hidden'); imgViewer.src = 'https://placehold.co/600x400/111827/06b6d4?text=Preview+Error'; };
+                } else {
+                    try {
+                        const loadingTask = pdfjsLib.getDocument(activeFile);
+                        const pdfDoc = await loadingTask.promise;
+                        const page = await pdfDoc.getPage(1);
+                        
+                        const containerWidth = canvasContainer.clientWidth || 800;
+                        const viewport = page.getViewport({ scale: Math.min((containerWidth - 32) / page.getViewport({scale:1}).width, 1.5) });
+
+                        const context = pdfCanvas.getContext('2d');
+                        const outputScale = window.devicePixelRatio || 1;
+                        pdfCanvas.width = Math.floor(viewport.width * outputScale);
+                        pdfCanvas.height = Math.floor(viewport.height * outputScale);
+                        pdfCanvas.style.width = Math.floor(viewport.width) + "px";
+                        pdfCanvas.style.height = Math.floor(viewport.height) + "px";
+
+                        await page.render({ canvasContext: context, viewport: viewport, transform: [outputScale, 0, 0, outputScale, 0, 0] }).promise;
+                        modalLoader.classList.add('hidden');
+                        canvasContainer.classList.remove('hidden');
+                    } catch (err) {
+                        canvasContainer.classList.add('hidden');
+                        pdfViewer.src = activeFile;
+                        pdfViewer.classList.remove('hidden');
+                        if (isMobileOrTablet) mobileTipBanner.classList.remove('hidden');
+                        setTimeout(() => modalLoader.classList.add('hidden'), 500);
+                    }
+                }
+            }
+        }
+
+        smartTab.addEventListener('click', () => switchModalTab('smart'));
+        docTab.addEventListener('click', () => switchModalTab('doc'));
+
+        function closeCertificateModal() {
+            certModal.classList.add('opacity-0');
+            modalContainer.classList.remove('scale-100');
+            modalContainer.classList.add('scale-95');
+            setTimeout(() => {
+                certModal.classList.add('hidden');
+                pdfViewer.src = ''; imgViewer.src = ''; smartContainer.innerHTML = '';
+            }, 300);
+        }
+
+        certCards.forEach(card => {
+            card.addEventListener('click', () => {
+                openCertificate(
+                    card.dataset.file,
+                    card.querySelector('h3').textContent,
+                    card.dataset.issuer || 'Verified Sponsor',
+                    card.dataset.hours || 'Verified Course',
+                    card.dataset.issued || 'Recently',
+                    card.dataset.icon || 'award'
+                );
+            });
+        });
+
+        closeModalBtn.addEventListener('click', closeCertificateModal);
+        certModal.addEventListener('click', (e) => { if (e.target === certModal) closeCertificateModal(); });
+
+        // 6. Gemini AI Logic
+        const apiKey = "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"; 
+
+        const kunalProfileContext = `
+        KUNAL SINGH SISODIYA PROFESSIONAL PROFILE:
+        - Role: Entry-level Flutter Developer / Information Technology Engineer
+        - Education: expected graduation in July 2026 from SAGE University, Indore in Information Technology.
+        - Location: Pithampur, MP, India. Phone: +91 7389164258. Email: Kunalsinghsisodiya9378@gmail.com
+        - GitHub: https://github.com/Hcxui
+        - Core Mobile Dev Tech: Flutter, Dart, Material UI, Responsive UI Design, State Management (Provider, setState), Backend (REST API, JSON Parsing, Firebase Auth, Firestore basics).
+        - Programming Languages: Dart, Python, Java.
+        - Theoretical Skills: Object-Oriented Programming (OOP), Data Structures & Algorithms.
+        - Key Projects: Notes App (Flutter/Local State), Mental Health Assistant (AI/UI), DecisionSense (AI-driven Flutter app for cognitive bias reflection & secure on-device processing).
+        - Certifications: AWS Cloud, Red Hat Python/Java/SysAdmin, Cisco AI/Ethical Hacker, Azure 900.
+        `;
+
+        async function queryGemini(systemInstruction, prompt) {
+            if(!apiKey) return "API Key missing. Please provide an API key in the source code to enable AI features.";
+            
+            // Dynamically route through OpenRouter if an OpenRouter key is detected
+            if (apiKey.startsWith("sk-or-")) {
+                const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiKey}`,
+                        'HTTP-Referer': window.location.href, // Required by OpenRouter
+                        'X-Title': 'Kunal Portfolio AI Hub' // Required by OpenRouter
+                    },
+                    body: JSON.stringify({
+                        model: "google/gemini-2.5-flash", // Updated to the latest valid model ID
+                        max_tokens: 1000, // Added explicitly to prevent OpenRouter from assuming massive token limits and causing credit errors
+                        messages: [
+                            { role: "system", content: systemInstruction },
+                            { role: "user", content: prompt }
+                        ]
+                    })
+                });
+                if(!response.ok) {
+                    const errData = await response.json().catch(() => ({}));
+                    throw new Error(errData.error?.message || `API Error HTTP ${response.status}`);
+                }
+                const result = await response.json();
+                return result.choices[0].message.content;
+            } else {
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }],
+                        systemInstruction: { parts: [{ text: systemInstruction }] }
+                    })
+                });
+                if(!response.ok) {
+                    const errData = await response.json().catch(() => ({}));
+                    throw new Error(errData.error?.message || `API Error HTTP ${response.status}`);
+                }
+                const result = await response.json();
+                return result.candidates[0].content.parts[0].text;
+            }
+        }
+
+        // Tabs logic
+        const tabChatBtn = document.getElementById('tab-chat-btn');
+        const tabMatcherBtn = document.getElementById('tab-matcher-btn');
+        const playgroundChat = document.getElementById('playground-chat');
+        const playgroundMatcher = document.getElementById('playground-matcher');
+
+        function switchAiTab(tab) {
+            if (tab === 'chat') {
+                tabChatBtn.className = "flex-1 md:flex-initial flex items-center justify-center md:justify-start gap-3 px-5 py-4 rounded-xl font-bold transition text-sm bg-accent2 text-white shadow-[0_0_20px_rgba(139,92,246,0.3)]";
+                tabMatcherBtn.className = "flex-1 md:flex-initial flex items-center justify-center md:justify-start gap-3 px-5 py-4 rounded-xl font-bold transition text-sm text-slate-400 hover:bg-white/5 hover:text-white border border-transparent hover:border-white/10";
+                playgroundChat.classList.remove('hidden'); playgroundMatcher.classList.add('hidden');
+            } else {
+                tabMatcherBtn.className = "flex-1 md:flex-initial flex items-center justify-center md:justify-start gap-3 px-5 py-4 rounded-xl font-bold transition text-sm bg-accent2 text-white shadow-[0_0_20px_rgba(139,92,246,0.3)]";
+                tabChatBtn.className = "flex-1 md:flex-initial flex items-center justify-center md:justify-start gap-3 px-5 py-4 rounded-xl font-bold transition text-sm text-slate-400 hover:bg-white/5 hover:text-white border border-transparent hover:border-white/10";
+                playgroundMatcher.classList.remove('hidden'); playgroundChat.classList.add('hidden');
+            }
+        }
+        tabChatBtn.addEventListener('click', () => switchAiTab('chat'));
+        tabMatcherBtn.addEventListener('click', () => switchAiTab('matcher'));
+
+        // Chat logic
+        const chatForm = document.getElementById('chat-form');
+        const chatInput = document.getElementById('chat-input');
+        const chatMessages = document.getElementById('chat-messages');
+
+        function appendMessage(sender, text) {
+            const div = document.createElement('div');
+            div.className = `flex items-start gap-4 max-w-[85%] ${sender === 'user' ? 'ml-auto flex-row-reverse' : ''}`;
+            div.innerHTML = `
+                <div class="w-8 h-8 rounded-lg ${sender === 'user' ? 'bg-accent text-dark' : 'bg-accent2/20 text-accent2'} border border-white/10 flex items-center justify-center font-bold text-xs flex-shrink-0 mt-1">${sender === 'user' ? 'U' : 'AI'}</div>
+                <div class="glass-panel p-4 rounded-2xl ${sender === 'user' ? 'rounded-tr-none bg-accent/20 border-accent/50 text-white' : 'rounded-tl-none border-white/10 text-slate-300'} leading-relaxed prose prose-invert prose-p:text-sm">
+                    ${sender === 'ai' && typeof marked !== 'undefined' ? marked.parse(text) : text}
+                </div>
+            `;
+            chatMessages.appendChild(div);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        chatForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const text = chatInput.value.trim();
+            if (!text) return;
+            appendMessage('user', text);
+            chatInput.value = '';
+            
+            // typing indicator
+            const typing = document.createElement('div');
+            typing.id = 'typing';
+            typing.className = 'text-accent2 text-xs font-mono animate-pulse ml-12';
+            typing.innerText = 'System computing response...';
+            chatMessages.appendChild(typing);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            try {
+                const res = await queryGemini("You are Kunal's AI assistant. Keep responses professional, tech-focused, and use markdown.", text + "\n\nContext:\n" + kunalProfileContext);
+                typing.remove();
+                appendMessage('ai', res);
+            } catch(e) {
+                typing.remove();
+                console.error("Chat Error:", e);
+                appendMessage('ai', `Connection Failed: ${e.message}`);
+            }
+        });
+
+        document.querySelectorAll('.suggestion-chip').forEach(c => {
+            c.addEventListener('click', () => { chatInput.value = c.innerText; chatForm.dispatchEvent(new Event('submit')); });
+        });
+
+        document.getElementById('clear-chat-btn').addEventListener('click', () => {
+            chatMessages.innerHTML = `
+                <div class="flex items-start gap-4 max-w-[85%]">
+                    <div class="w-8 h-8 rounded-lg bg-accent2/20 text-accent2 border border-accent2/30 flex items-center justify-center font-bold text-xs flex-shrink-0 mt-1">AI</div>
+                    <div class="glass-panel p-4 rounded-2xl rounded-tl-none border-white/10 text-slate-300 leading-relaxed">
+                        <span class="text-accent">root@kunal-portfolio:~$</span> system_reset<br>Memory cleared. Awaiting new query.
+                    </div>
+                </div>`;
+        });
+
+        // Matcher Logic
+        const analyzeBtn = document.getElementById('analyze-btn');
+        const jdTextarea = document.getElementById('jd-textarea');
+        const analysisOutput = document.getElementById('analysis-output');
+
+        analyzeBtn.addEventListener('click', async () => {
+            const jd = jdTextarea.value.trim();
+            if(!jd) return;
+            
+            analysisOutput.innerHTML = `
+                <div class="flex flex-col items-center justify-center text-center h-full text-accent gap-4">
+                    <i data-lucide="loader-2" class="w-12 h-12 animate-spin"></i>
+                    <p class="animate-pulse">Cross-referencing Candidate Data with JD parameters...</p>
+                </div>`;
+            lucide.createIcons();
+
+            try {
+                const prompt = `Analyze this JD and report how Kunal fits. Use markdown. Start with match %. \nJD:\n${jd}`;
+                const res = await queryGemini("You are a technical recruiter AI evaluating Kunal. Context:\n" + kunalProfileContext, prompt);
+                analysisOutput.innerHTML = `<div class="prose prose-invert prose-indigo max-w-none text-sm">${marked.parse(res)}</div>`;
+            } catch(e) {
+                console.error("Analyzer Error:", e);
+                analysisOutput.innerHTML = `<div class="text-red-400 p-4 border border-red-500/30 bg-red-500/10 rounded-xl">Error executing analysis: ${e.message}</div>`;
+            }
+        });
+    </script>
+</body>
+</html>
