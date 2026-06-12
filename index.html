@@ -43,7 +43,6 @@
                         glassBorder: 'rgba(255, 255, 255, 0.08)',
                         accent: '#06b6d4', // Cyan
                         accent2: '#8b5cf6', // Violet
-                        neonPink: '#f0abfc', // Cyberpunk Pink
                     },
                     animation: {
                         'spin-slow': 'spin 8s linear infinite',
@@ -135,68 +134,12 @@
             box-shadow: 0 0 30px rgba(6, 182, 212, 0.1);
         }
 
-        /* Cyberpunk Glitch & Scanline Effects */
+        /* Typography Gradients */
         .text-gradient {
-            background: linear-gradient(to right, #06b6d4, #f0abfc, #ff00ff);
+            background: linear-gradient(to right, #06b6d4, #8b5cf6);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-        }
-
-        .cyber-glitch {
-            position: relative;
-        }
-        
-        .cyber-glitch::before, .cyber-glitch::after {
-            content: attr(data-text);
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0.8;
-            pointer-events: none;
-        }
-
-        .cyber-glitch::before {
-            left: 2px;
-            text-shadow: -2px 0 #ff00ff;
-            clip-path: inset(20% 0 80% 0);
-            animation: glitch-anim-1 2.5s infinite linear alternate-reverse;
-        }
-
-        .cyber-glitch::after {
-            left: -2px;
-            text-shadow: 2px 0 #06b6d4;
-            clip-path: inset(80% 0 10% 0);
-            animation: glitch-anim-2 3s infinite linear alternate-reverse;
-        }
-
-        @keyframes glitch-anim-1 {
-            0% { clip-path: inset(20% 0 80% 0); }
-            20% { clip-path: inset(60% 0 10% 0); transform: translate(-2px, 2px); }
-            40% { clip-path: inset(40% 0 50% 0); }
-            60% { clip-path: inset(80% 0 5% 0); transform: translate(2px, -2px); }
-            80% { clip-path: inset(10% 0 70% 0); }
-            100% { clip-path: inset(30% 0 50% 0); transform: translate(-2px, 0); }
-        }
-
-        @keyframes glitch-anim-2 {
-            0% { clip-path: inset(10% 0 60% 0); }
-            20% { clip-path: inset(30% 0 20% 0); transform: translate(2px, -2px); }
-            40% { clip-path: inset(70% 0 10% 0); }
-            60% { clip-path: inset(20% 0 50% 0); transform: translate(-2px, 2px); }
-            80% { clip-path: inset(50% 0 30% 0); }
-            100% { clip-path: inset(5% 0 80% 0); transform: translate(2px, 0); }
-        }
-
-        .scanlines {
-            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.2));
-            background-size: 100% 4px;
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-            z-index: 1;
         }
 
         /* Custom Scrollbar */
@@ -279,32 +222,32 @@
 
     <main class="relative z-10">
         <!-- Hero Section -->
-        <section id="home" class="min-h-screen flex items-center pt-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto overflow-hidden relative">
-            <div class="scanlines opacity-50"></div>
+        <section id="home" class="min-h-screen flex items-center pt-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto overflow-hidden">
             <div class="w-full flex flex-col md:flex-row items-center justify-between gap-12">
-                <div class="md:w-3/5 space-y-8 relative z-10 hero-gsap-target">
-                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-panel border border-accent/30 text-accent font-mono text-xs tracking-widest uppercase">
+                <div class="md:w-3/5 space-y-8 relative z-10 reveal">
+                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-panel border border-accent/30 text-accent font-medium text-xs tracking-widest uppercase">
                         <span class="relative flex h-2 w-2">
                           <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
                           <span class="relative inline-flex rounded-full h-2 w-2 bg-accent"></span>
                         </span>
-                        SYS.STATUS: ONLINE // AVAILABLE
+                        Available for Impact
                     </div>
                     <div class="space-y-2">
-                        <h2 class="text-xl md:text-2xl text-neonPink font-mono tracking-widest uppercase animate-pulse">> Initializing User...</h2>
-                        <h1 class="font-heading text-5xl md:text-7xl lg:text-8xl font-black text-white leading-tight cyber-glitch" data-text="Kunal Singh Sisodiya.">
+                        <h2 class="text-xl md:text-2xl text-slate-400 font-medium tracking-wide">HELLO, I AM</h2>
+                        <h1 class="font-heading text-5xl md:text-7xl lg:text-8xl font-black text-white leading-tight">
                             Kunal Singh <br/> <span class="text-gradient">Sisodiya.</span>
                         </h1>
                     </div>
                     <h2 class="text-2xl md:text-3xl text-slate-300 font-light flex items-center gap-3">
-                        <i data-lucide="cpu" class="text-accent2 w-8 h-8"></i>
-                        Cyber-Physical Mobile Engineer
+                        <i data-lucide="terminal" class="text-accent2 w-8 h-8"></i>
+                        Flutter & Mobile Developer
                     </h2>
                     <p class="text-lg text-slate-400 leading-relaxed max-w-xl font-light">
-                        Engineering immersive mobile experiences and scalable architectures. I bridge the gap between complex logic and beautiful, high-performance interfaces.
+                        Engineering immersive mobile experiences and scalable architectures. I bridge the gap between complex logic and beautiful, responsive user interfaces.
                     </p>
                     <div class="flex gap-4 pt-4 flex-wrap">
-                        <a href="#projects" class="group relative px-8 py-4 bg-white text-black font-bold rounded-full overflow-hidden hover:scale-105 transition-transform duration-300 shadow-[0_0_20px_rgba(6,182,212,0.4)]">
+                        <a href="#projects" class="group relative px-8 py-4 bg-white text-black font-bold rounded-full overflow-hidden hover:scale-105 transition-transform duration-300">
+                            <span class="relative z-10 flex items-center gap-2">View Work <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i></span>
                             <div class="absolute inset-0 bg-accent transform scale-x-0 origin-left group-hover:scale-x-100 transition-transform duration-500 ease-out z-0"></div>
                         </a>
                         <a href="Kunal_Singh_Sisodiya.pdf" target="_blank" class="px-8 py-4 glass-panel text-white font-medium rounded-full hover:bg-white/10 transition flex items-center gap-2 border border-white/10 hover:border-white/30">
@@ -317,7 +260,7 @@
                 </div>
                 
                 <!-- Floating 3D Element Container -->
-                <div class="md:w-2/5 flex justify-center relative hero-3d-target z-10" style="transition-delay: 0.2s;">
+                <div class="md:w-2/5 flex justify-center relative reveal" style="transition-delay: 0.2s;">
                     <div class="relative w-72 h-72 lg:w-96 lg:h-96 animate-float">
                         <!-- Abstract glowing rings -->
                         <div class="absolute inset-0 rounded-full border border-accent/20 border-dashed animate-spin-slow"></div>
@@ -935,9 +878,6 @@
         // 3. Three.js Interactive Background (4D Particle Network)
         const canvas = document.getElementById('bg-canvas');
         const scene = new THREE.Scene();
-        // Cyberpunk fog for depth
-        scene.fog = new THREE.FogExp2('#030712', 0.05);
-        
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
         
@@ -968,13 +908,6 @@
         const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
         scene.add(particlesMesh);
 
-        // Cyberpunk Moving Grid Floor
-        const gridHelper = new THREE.GridHelper(100, 50, 0x06b6d4, 0x8b5cf6);
-        gridHelper.position.y = -3;
-        gridHelper.material.opacity = 0.2;
-        gridHelper.material.transparent = true;
-        scene.add(gridHelper);
-
         // Lines connecting close particles
         const lineMaterial = new THREE.LineBasicMaterial({
             color: '#8b5cf6',
@@ -1004,10 +937,8 @@
             const elapsedTime = clock.getElapsedTime();
 
             // Rotate particles slowly
-            particlesMesh.rotation.y = elapsedTime * 0.02;
-
-            // Animate Grid for infinite scroll effect (Cyberpunk feel)
-            gridHelper.position.z = (elapsedTime * 2) % 2;
+            particlesMesh.rotation.y = elapsedTime * 0.05;
+            particlesMesh.rotation.x = elapsedTime * 0.02;
 
             // Follow mouse with easing
             targetX = mouseX * 0.001;
@@ -1030,32 +961,6 @@
         // 4. GSAP & Vanilla Scroll Reveals
         gsap.registerPlugin(ScrollTrigger);
         
-        // Heroic Entrance Animation (Superhero Landing)
-        window.addEventListener('load', () => {
-            const heroTl = gsap.timeline();
-            
-            // Initial state
-            gsap.set(".hero-gsap-target", { opacity: 0, y: 50, scale: 0.95 });
-            gsap.set(".hero-3d-target", { opacity: 0, scale: 0.5, rotation: -15 });
-            
-            // Epic reveal
-            heroTl.to(".hero-gsap-target", {
-                opacity: 1,
-                y: 0,
-                scale: 1,
-                duration: 1.5,
-                ease: "expo.out",
-                stagger: 0.2
-            })
-            .to(".hero-3d-target", {
-                opacity: 1,
-                scale: 1,
-                rotation: 0,
-                duration: 2,
-                ease: "elastic.out(1, 0.5)"
-            }, "-=1.2");
-        });
-
         // Navbar blur effect on scroll
         const navbar = document.getElementById('navbar');
         window.addEventListener('scroll', () => {
@@ -1319,7 +1224,7 @@
         certModal.addEventListener('click', (e) => { if (e.target === certModal) closeCertificateModal(); });
 
         // 6. Gemini AI Logic
-        const apiKey = "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"; 
+        const apiKey = ""; 
 
         const kunalProfileContext = `
         KUNAL SINGH SISODIYA PROFESSIONAL PROFILE:
@@ -1348,8 +1253,7 @@
                         'X-Title': 'Kunal Portfolio AI Hub' // Required by OpenRouter
                     },
                     body: JSON.stringify({
-                        model: "google/gemini-2.5-flash", // Updated to the latest valid model ID
-                        max_tokens: 1000, // Added explicitly to prevent OpenRouter from assuming massive token limits and causing credit errors
+                        model: "google/gemini-1.5-flash", // Correct, stable model ID for OpenRouter
                         messages: [
                             { role: "system", content: systemInstruction },
                             { role: "user", content: prompt }
