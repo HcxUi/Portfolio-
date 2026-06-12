@@ -656,12 +656,42 @@
                         <p class="text-sm text-slate-400 mb-4">Red Hat</p>
                         <div class="text-xs font-mono text-slate-500 bg-dark/50 inline-block px-2 py-1 rounded">32 Hours • Dec 2025</div>
                     </div>
+
+                    <!-- Wincom Technologies -->
+                    <div data-file="photo_2026-06-12_19-26-36.jpg" data-issuer="Wincom Technologies" data-hours="Diploma" data-issued="July 2024" data-icon="award" class="cert-card glass-card p-6 rounded-2xl border border-white/10 hover:border-cyan-500/50 transition-all cursor-pointer group reveal">
+                        <div class="flex justify-between items-start mb-6">
+                            <div class="w-12 h-12 bg-cyan-500/10 text-cyan-400 rounded-xl flex items-center justify-center group-hover:bg-cyan-500 group-hover:text-white transition-colors">
+                                <i data-lucide="award" class="w-6 h-6"></i>
+                            </div>
+                            <span class="text-xs bg-white/5 text-slate-300 px-3 py-1.5 rounded-full flex items-center gap-1 border border-white/10 group-hover:bg-cyan-500 group-hover:text-white transition-all">
+                                <i data-lucide="eye" class="w-3.5 h-3.5"></i> Inspect
+                            </span>
+                        </div>
+                        <h3 class="font-bold text-white text-lg leading-tight mb-2">Material Management (Advanced Technologies)</h3>
+                        <p class="text-sm text-slate-400 mb-4">Wincom Technologies</p>
+                        <div class="text-xs font-mono text-slate-500 bg-dark/50 inline-block px-2 py-1 rounded">Grade A+ • Jul 2024</div>
+                    </div>
+
+                    <!-- Internshala Training -->
+                    <div data-file="Internshala_Training.pdf" data-issuer="Internshala Trainings" data-hours="6 Weeks" data-issued="June 2025" data-icon="check-circle" class="cert-card glass-card p-6 rounded-2xl border border-white/10 hover:border-blue-500/50 transition-all cursor-pointer group reveal" style="transition-delay: 0.1s;">
+                        <div class="flex justify-between items-start mb-6">
+                            <div class="w-12 h-12 bg-blue-500/10 text-blue-400 rounded-xl flex items-center justify-center group-hover:bg-blue-500 group-hover:text-white transition-colors">
+                                <i data-lucide="check-circle" class="w-6 h-6"></i>
+                            </div>
+                            <span class="text-xs bg-white/5 text-slate-300 px-3 py-1.5 rounded-full flex items-center gap-1 border border-white/10 group-hover:bg-blue-500 group-hover:text-white transition-all">
+                                <i data-lucide="eye" class="w-3.5 h-3.5"></i> Inspect
+                            </span>
+                        </div>
+                        <h3 class="font-bold text-white text-lg leading-tight mb-2">Software Testing</h3>
+                        <p class="text-sm text-slate-400 mb-4">Internshala Trainings</p>
+                        <div class="text-xs font-mono text-slate-500 bg-dark/50 inline-block px-2 py-1 rounded">6 Weeks • Jun 2025</div>
+                    </div>
                 </div>
 
                 <div class="mt-12 text-center reveal">
                      <div class="inline-flex items-center justify-center gap-3 px-6 py-3 glass-panel border border-white/10 rounded-full text-slate-300 text-sm font-medium">
                          <i data-lucide="award" class="w-5 h-5 text-accent"></i>
-                         Also Certified: <span class="text-white font-bold">Azure 900 Fundamentals & MSME Adv Excel</span>
+                         Also Certified: <span class="text-white font-bold">Azure 900 Fundamentals, MSME Adv Excel, AI for Techies Python Workshop</span>
                      </div>
                 </div>
             </div>
@@ -1319,7 +1349,7 @@
         certModal.addEventListener('click', (e) => { if (e.target === certModal) closeCertificateModal(); });
 
         // 6. Gemini AI Logic
-        const apiKey = "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"; 
+        const apiKey = ""; 
 
         const kunalProfileContext = `
         KUNAL SINGH SISODIYA PROFESSIONAL PROFILE:
@@ -1328,10 +1358,10 @@
         - Location: Pithampur, MP, India. Phone: +91 7389164258. Email: Kunalsinghsisodiya9378@gmail.com
         - GitHub: https://github.com/Hcxui
         - Core Mobile Dev Tech: Flutter, Dart, Material UI, Responsive UI Design, State Management (Provider, setState), Backend (REST API, JSON Parsing, Firebase Auth, Firestore basics).
-        - Programming Languages: Dart, Python, Java.
+        - Programming Languages: Dart, Python, Java, Microsoft Excel (advanced).
         - Theoretical Skills: Object-Oriented Programming (OOP), Data Structures & Algorithms.
         - Key Projects: Notes App (Flutter/Local State), Mental Health Assistant (AI/UI), DecisionSense (AI-driven Flutter app for cognitive bias reflection & secure on-device processing).
-        - Certifications: AWS Cloud, Red Hat Python/Java/SysAdmin, Cisco AI/Ethical Hacker, Azure 900.
+        - Certifications: AWS Cloud, Red Hat Python/Java/SysAdmin, Cisco AI/Ethical Hacker, Azure 900, Wincom Technologies Diploma in Material Management (Grade A+), Internshala Software Testing (6 weeks), MSME Adv Excel, AI for Techies Python Workshop.
         `;
 
         async function queryGemini(systemInstruction, prompt) {
