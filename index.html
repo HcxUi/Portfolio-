@@ -1,0 +1,2144 @@
+<!DOCTYPE html>
+<html lang="en" class="dark select-none">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KUNAL_OS // PROTOCOL: SISODIYA [AAA TACTICAL GAMING PORTFOLIO]</title>
+
+    <!-- Meta -->
+    <meta name="description"
+        content="Kunal Singh Sisodiya - High-Tier Elite Software Architect & Game-Inspired Web Experience">
+    <meta name="theme-color" content="#030712">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Marked.js for AI Terminal & Quest Markdown -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <!-- PDF.js for Inspecting Real Certificate Loot -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <script>
+        if (window.pdfjsLib) {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+        }
+    </script>
+
+    <!-- Three.js & GSAP for 3D Cyber Holo Mesh & VFX -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <!-- Canvas Confetti for Level-Up VFX -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <!-- Google Fonts: Orbitron, Rajdhani, Share Tech Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap"
+        rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        game: ['Orbitron', 'sans-serif'],
+                        tactical: ['Rajdhani', 'sans-serif'],
+                        mono: ['Share Tech Mono', 'monospace'],
+                    },
+                    colors: {
+                        hud: {
+                            cyan: '#00f0ff',
+                            neon: '#39ff14',
+                            amber: '#ffb703',
+                            crimson: '#ff003c',
+                            purple: '#b026ff',
+                            obsidian: '#030712',
+                            dark: '#080d1a',
+                            panel: 'rgba(10, 17, 34, 0.75)'
+                        }
+                    },
+                    animation: {
+                        'radar-sweep': 'radarSweep 3s linear infinite',
+                        'glitch': 'glitchAnim 2.5s infinite',
+                        'scanline': 'scanline 8s linear infinite',
+                        'pulse-hud': 'pulseHud 2s ease-in-out infinite alternate',
+                    },
+                    keyframes: {
+                        radarSweep: {
+                            '0%': { transform: 'rotate(0deg)' },
+                            '100%': { transform: 'rotate(360deg)' }
+                        },
+                        pulseHud: {
+                            '0%': { opacity: '0.6', filter: 'drop-shadow(0 0 5px rgba(0, 240, 255, 0.4))' },
+                            '100%': { opacity: '1', filter: 'drop-shadow(0 0 20px rgba(0, 240, 255, 0.9))' }
+                        },
+                        scanline: {
+                            '0%': { transform: 'translateY(-100%)' },
+                            '100%': { transform: 'translateY(1000%)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        body {
+            background-color: #030712;
+            color: #e2e8f0;
+            overflow-x: hidden;
+            cursor: crosshair;
+        }
+
+        /* Scanline Overlay (CRT Gaming Screen Effect) */
+        .crt-overlay {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
+                linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+            background-size: 100% 3px, 6px 100%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.85;
+        }
+
+        /* Vignette effect */
+        .vignette {
+            position: fixed;
+            inset: 0;
+            box-shadow: inset 0 0 120px rgba(0, 0, 0, 0.85);
+            pointer-events: none;
+            z-index: 9998;
+        }
+
+        /* 3D Canvas Background */
+        #gaming-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        /* Custom Crosshair Cursor */
+        #crosshair-center {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #00f0ff;
+            pointer-events: none;
+            z-index: 999999;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff;
+            transition: transform 0.05s ease;
+        }
+
+        #crosshair-reticle {
+            position: fixed;
+            width: 36px;
+            height: 36px;
+            border: 1.5px dashed rgba(0, 240, 255, 0.7);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 999998;
+            transform: translate(-50%, -50%);
+            transition: width 0.15s ease, height 0.15s ease, border-color 0.15s ease;
+        }
+
+        body.targeting #crosshair-reticle {
+            width: 52px;
+            height: 52px;
+            border-color: #ff003c;
+            transform: translate(-50%, -50%) rotate(45deg);
+        }
+
+        /* Tactical HUD Corner Cuts & Panel Graphics */
+        .hud-panel {
+            background: rgba(8, 13, 26, 0.82);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(0, 240, 255, 0.25);
+            position: relative;
+            clip-path: polygon(0 16px, 16px 0,
+                    calc(100% - 16px) 0, 100% 16px,
+                    100% calc(100% - 16px), calc(100% - 16px) 100%,
+                    16px 100%, 0 calc(100% - 16px));
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), inset 0 0 25px rgba(0, 240, 255, 0.05);
+        }
+
+        .hud-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 24px;
+            height: 2px;
+            background: #00f0ff;
+            box-shadow: 0 0 8px #00f0ff;
+        }
+
+        .hud-panel::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 24px;
+            height: 2px;
+            background: #ffb703;
+            box-shadow: 0 0 8px #ffb703;
+        }
+
+        .hud-card-hover {
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .hud-card-hover:hover {
+            transform: translateY(-6px) scale(1.01);
+            border-color: #00f0ff;
+            box-shadow: 0 0 35px rgba(0, 240, 255, 0.35), inset 0 0 15px rgba(0, 240, 255, 0.15);
+        }
+
+        /* Neon Glow Text */
+        .neon-text-cyan {
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.8), 0 0 25px rgba(0, 240, 255, 0.4);
+        }
+
+        .neon-text-crimson {
+            text-shadow: 0 0 10px rgba(255, 0, 60, 0.8), 0 0 25px rgba(255, 0, 60, 0.4);
+        }
+
+        .neon-text-amber {
+            text-shadow: 0 0 10px rgba(255, 183, 3, 0.8), 0 0 25px rgba(255, 183, 3, 0.4);
+        }
+
+        /* Loot Item Rarity Tiers */
+        .rarity-legendary {
+            border-color: #ffb703 !important;
+            box-shadow: 0 0 25px rgba(255, 183, 3, 0.3), inset 0 0 12px rgba(255, 183, 3, 0.1) !important;
+        }
+
+        .rarity-epic {
+            border-color: #b026ff !important;
+            box-shadow: 0 0 25px rgba(176, 38, 255, 0.3), inset 0 0 12px rgba(176, 38, 255, 0.1) !important;
+        }
+
+        .rarity-rare {
+            border-color: #00f0ff !important;
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.3), inset 0 0 12px rgba(0, 240, 255, 0.1) !important;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #030712;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #ff003c, #00f0ff);
+            border-radius: 2px;
+        }
+
+        /* Floating Gun-Camera Target */
+        .target-orb {
+            animation: orbFloat 4s ease-in-out infinite alternate;
+        }
+
+        @keyframes orbFloat {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+
+            50% {
+                transform: translate(15px, -20px) rotate(5deg);
+            }
+
+            100% {
+                transform: translate(-10px, 15px) rotate(-5deg);
+            }
+        }
+    </style>
+</head>
+
+<body class="antialiased font-tactical">
+
+    <!-- Screen VFX Layers -->
+    <div class="crt-overlay"></div>
+    <div class="vignette"></div>
+
+    <!-- Sovereign Crosshair Cursor -->
+    <div id="crosshair-center"></div>
+    <div id="crosshair-reticle"></div>
+
+    <!-- 3D Three.js Background Canvas -->
+    <canvas id="gaming-canvas"></canvas>
+
+    <!-- EXTRAORDINARY AAA PC GAMING BOOTLOADER SCREEN -->
+    <div id="game-loader" class="fixed inset-0 bg-[#02050e] z-[999999] flex flex-col items-center justify-center p-6">
+
+        <!-- Animated Hex Grid & System Diagnostic -->
+        <div class="w-full max-w-xl flex flex-col items-center">
+
+            <!-- Emblem Animation -->
+            <div class="relative w-36 h-36 flex items-center justify-center mb-8">
+                <div class="absolute inset-0 rounded-full border-2 border-dashed border-hud-cyan animate-spin"
+                    style="animation-duration: 12s;"></div>
+                <div class="absolute inset-3 rounded-full border-2 border-hud-crimson/50 animate-spin"
+                    style="animation-duration: 8s; animation-direction: reverse;"></div>
+                <div class="absolute inset-6 rounded-full border border-hud-amber/60 animate-ping"></div>
+
+                <!-- Central Skull/Spartan Game Crest -->
+                <div
+                    class="w-20 h-20 rounded-2xl bg-gradient-to-br from-hud-cyan via-hud-crimson to-hud-amber p-[2px] flex items-center justify-center shadow-[0_0_40px_rgba(0,240,255,0.8)]">
+                    <div class="w-full h-full bg-[#030712] rounded-2xl flex flex-col items-center justify-center">
+                        <i data-lucide="shield-alert" class="w-10 h-10 text-hud-cyan animate-pulse"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tactical Title -->
+            <h1 class="font-game font-black text-3xl sm:text-4xl text-white tracking-widest text-center mb-2">
+                PROJECT // <span class="text-hud-cyan neon-text-cyan">SISODIYA</span>
+            </h1>
+            <p class="font-mono text-xs text-hud-amber tracking-[0.3em] uppercase mb-8">
+                [TACTICAL CYBER-ENGINE BOOT SEQUENCE]
+            </p>
+
+            <!-- Loading Progress Bar -->
+            <div
+                class="w-full bg-black/80 border border-hud-cyan/40 p-1 rounded-sm shadow-[0_0_20px_rgba(0,240,255,0.3)] mb-4">
+                <div id="loader-bar"
+                    class="h-3 bg-gradient-to-r from-hud-crimson via-hud-amber to-hud-cyan w-0 transition-all duration-200">
+                </div>
+            </div>
+
+            <!-- Real-time Console Log -->
+            <div class="w-full flex justify-between font-mono text-xs text-slate-400">
+                <span id="loader-status" class="text-hud-cyan font-bold">MOUNTING PHYSX SHADERS...</span>
+                <span id="loader-pct" class="text-white font-bold">0%</span>
+            </div>
+
+            <div class="mt-6 font-mono text-[10px] text-slate-600 flex items-center gap-4">
+                <span>MEM: 64GB DDR5</span>
+                <span>•</span>
+                <span>VRAM: RTX 4090 TITAN</span>
+                <span>•</span>
+                <span>PING: 12ms</span>
+            </div>
+
+            <!-- Start Game CTA (Appears when 100%) -->
+            <button id="enter-game-btn"
+                class="hidden mt-8 px-10 py-4 bg-hud-cyan hover:bg-white text-black font-game font-black text-sm tracking-widest uppercase transition-all shadow-[0_0_35px_rgba(0,240,255,0.8)] hover:scale-105">
+                PRESS TO DEPLOY AGENT
+            </button>
+        </div>
+    </div>
+
+    <!-- HUD TOP BAR (FPS, Audio, Health, Level, Stats) -->
+    <header class="fixed top-0 left-0 w-full z-50 px-4 sm:px-8 py-3 pointer-events-none">
+        <div class="max-w-7xl mx-auto flex items-center justify-between pointer-events-auto">
+
+            <!-- Left: Character Avatar & Level Status -->
+            <div class="flex items-center gap-3">
+                <div
+                    class="relative w-12 h-12 rounded-xl bg-gradient-to-tr from-hud-cyan to-hud-crimson p-[1.5px] flex-shrink-0">
+                    <div class="w-full h-full bg-[#080d1a] rounded-xl flex items-center justify-center">
+                        <span class="font-game font-black text-white text-lg">K</span>
+                    </div>
+                    <span
+                        class="absolute -bottom-1 -right-1 bg-hud-neon text-black font-mono text-[10px] font-black px-1.5 rounded-sm">LVL.24</span>
+                </div>
+
+                <div class="hidden sm:block font-mono">
+                    <div class="flex items-center gap-2">
+                        <span class="font-game font-black text-white text-sm tracking-wider">KUNAL SISODIYA</span>
+                        <span
+                            class="text-[10px] bg-hud-cyan/20 border border-hud-cyan/40 text-hud-cyan px-1.5 py-0.5 rounded">CLASS:
+                            ARCHITECT</span>
+                    </div>
+                    <!-- HP / XP Bar -->
+                    <div class="w-36 h-1.5 bg-black/60 rounded-full mt-1 overflow-hidden border border-white/10 flex">
+                        <div id="hp-bar" class="h-full bg-hud-neon w-[100%] transition-all duration-300"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Center: Navigation Beacon Cluster -->
+            <nav
+                class="hidden md:flex items-center gap-1 bg-black/60 backdrop-blur-md border border-hud-cyan/30 p-1.5 rounded-xl font-game text-xs tracking-wider">
+                <a href="#hero"
+                    class="px-4 py-2 rounded-lg text-slate-300 hover:text-hud-cyan hover:bg-white/5 transition flex items-center gap-1.5">
+                    <i data-lucide="crosshair" class="w-3.5 h-3.5"></i> BRIEFING
+                </a>
+                <a href="#skills-tree"
+                    class="px-4 py-2 rounded-lg text-slate-300 hover:text-hud-cyan hover:bg-white/5 transition flex items-center gap-1.5">
+                    <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> TALENT TREE
+                </a>
+                <a href="#quests"
+                    class="px-4 py-2 rounded-lg text-slate-300 hover:text-hud-cyan hover:bg-white/5 transition flex items-center gap-1.5">
+                    <i data-lucide="sword" class="w-3.5 h-3.5"></i> CAMPAIGNS
+                </a>
+                <a href="#loot-vault"
+                    class="px-4 py-2 rounded-lg text-slate-300 hover:text-hud-amber hover:bg-white/5 transition flex items-center gap-1.5">
+                    <i data-lucide="trophy" class="w-3.5 h-3.5 text-hud-amber"></i> LOOT VAULT
+                </a>
+                <a href="#terminal-ai"
+                    class="px-4 py-2 rounded-lg text-hud-cyan bg-hud-cyan/10 border border-hud-cyan/30 transition flex items-center gap-1.5">
+                    <i data-lucide="bot" class="w-3.5 h-3.5"></i> AI COMPANION
+                </a>
+            </nav>
+
+            <!-- Right: Telemetry Tickers, Audio & Target Practice -->
+            <div class="flex items-center gap-3 font-mono text-xs">
+
+                <!-- Target Shooter Practice Trigger -->
+                <button id="minigame-toggle"
+                    class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-hud-crimson/20 border border-hud-crimson text-hud-crimson hover:bg-hud-crimson hover:text-black font-game text-[11px] tracking-wider transition"
+                    title="Start Interactive Shooting Mini-Game">
+                    <i data-lucide="target" class="w-3.5 h-3.5"></i>
+                    <span>TARGET PRACTICE</span>
+                </button>
+
+                <!-- Audio SFX Toggle -->
+                <button id="sfx-toggle"
+                    class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-black/60 border border-hud-cyan/40 text-hud-cyan hover:bg-hud-cyan hover:text-black transition">
+                    <i data-lucide="volume-2" class="w-3.5 h-3.5" id="sfx-icon"></i>
+                    <span id="sfx-label" class="font-game text-[11px]">SFX: ON</span>
+                </button>
+
+                <!-- FPS Counter -->
+                <div
+                    class="hidden lg:flex items-center gap-1 px-2.5 py-1 rounded bg-black/60 border border-white/10 text-hud-neon font-bold text-[11px]">
+                    <span id="fps-counter">60</span> <span>FPS</span>
+                </div>
+            </div>
+
+        </div>
+    </header>
+
+    <!-- SECTION 00: HERO // OPERATIONAL BRIEFING -->
+    <section id="hero"
+        class="min-h-screen pt-32 pb-20 px-4 sm:px-8 max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-12 relative z-10">
+
+        <!-- Left: Operator Card & Mission Objectives -->
+        <div class="lg:w-3/5 space-y-6">
+
+            <div
+                class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-sm bg-hud-cyan/10 border-l-4 border-hud-cyan font-mono text-xs text-hud-cyan uppercase tracking-widest">
+                <span class="w-2 h-2 bg-hud-cyan rounded-full animate-ping"></span>
+                ACTIVE MISSION: FULL-TIME RECRUITMENT DEPLOYMENT
+            </div>
+
+            <div class="space-y-2">
+                <span class="font-mono text-xs text-slate-500 uppercase tracking-widest block">OPERATOR IDENTITY //
+                    DESIGNATION:</span>
+                <h1
+                    class="font-game font-black text-5xl sm:text-7xl lg:text-8xl tracking-tight text-white leading-none">
+                    KUNAL <br>
+                    <span
+                        class="text-transparent bg-clip-text bg-gradient-to-r from-hud-cyan via-hud-amber to-hud-crimson neon-text-cyan">
+                        SISODIYA
+                    </span>
+                </h1>
+            </div>
+
+            <!-- Character Role & Stats Radar -->
+            <div class="hud-panel p-6 rounded-2xl max-w-2xl border-hud-cyan/40">
+                <div class="flex items-center justify-between border-b border-white/10 pb-3 mb-4 font-mono text-xs">
+                    <span class="text-hud-amber flex items-center gap-2">
+                        <i data-lucide="terminal" class="w-4 h-4"></i> SPECIALIZATION: FLUTTER & SYSTEMS ARCHITECTURE
+                    </span>
+                    <span class="text-hud-neon">STATUS: COMBAT READY</span>
+                </div>
+
+                <p class="font-tactical text-base sm:text-lg text-slate-300 leading-relaxed">
+                    Senior-grade Entry Software Architect forging 60FPS mobile rimes in Flutter/Dart, orchestrating
+                    AWS/Firebase cloud networks, and embedding neural intelligence into local clients.
+                </p>
+
+                <!-- Attribute Stat Meters (Game Character Sheet) -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6 pt-6 border-t border-white/10 font-mono text-xs">
+                    <div>
+                        <div class="flex justify-between text-slate-400 mb-1">
+                            <span>AGI (SPEED)</span>
+                            <span class="text-hud-cyan">98</span>
+                        </div>
+                        <div class="w-full h-1.5 bg-black/80 rounded-full overflow-hidden">
+                            <div class="h-full bg-hud-cyan w-[98%]"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-slate-400 mb-1">
+                            <span>INT (LOGIC)</span>
+                            <span class="text-hud-amber">94</span>
+                        </div>
+                        <div class="w-full h-1.5 bg-black/80 rounded-full overflow-hidden">
+                            <div class="h-full bg-hud-amber w-[94%]"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-slate-400 mb-1">
+                            <span>CHA (LEAD)</span>
+                            <span class="text-hud-neon">92</span>
+                        </div>
+                        <div class="w-full h-1.5 bg-black/80 rounded-full overflow-hidden">
+                            <div class="h-full bg-hud-neon w-[92%]"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-slate-400 mb-1">
+                            <span>DEF (ROBUST)</span>
+                            <span class="text-hud-crimson">96</span>
+                        </div>
+                        <div class="w-full h-1.5 bg-black/80 rounded-full overflow-hidden">
+                            <div class="h-full bg-hud-crimson w-[96%]"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Tactical Buttons -->
+            <div class="flex flex-wrap items-center gap-4 pt-2">
+                <a href="#quests"
+                    class="px-8 py-4 bg-hud-cyan hover:bg-white text-black font-game font-bold text-xs uppercase tracking-widest shadow-[0_0_25px_rgba(0,240,255,0.7)] hover:scale-105 transition flex items-center gap-2">
+                    <i data-lucide="play" class="w-4 h-4"></i> LAUNCH CAMPAIGNS
+                </a>
+
+                <a href="Kunal_Singh_Sisodiya.pdf" target="_blank" download
+                    class="px-8 py-4 bg-transparent border border-hud-amber text-hud-amber hover:bg-hud-amber hover:text-black font-game font-bold text-xs uppercase tracking-widest shadow-[0_0_25px_rgba(255,183,3,0.3)] hover:scale-105 transition flex items-center gap-2">
+                    <i data-lucide="download" class="w-4 h-4"></i> DOWNLOAD OPERATOR CV
+                </a>
+
+                <a href="#loot-vault"
+                    class="px-6 py-4 bg-black/60 border border-white/20 text-slate-300 hover:text-hud-cyan hover:border-hud-cyan font-game font-bold text-xs uppercase tracking-widest transition flex items-center gap-2">
+                    <i data-lucide="shield" class="w-4 h-4"></i> 11 VERIFIED LOOT
+                </a>
+            </div>
+
+        </div>
+
+        <!-- Right: 3D Tactical Holo Sphere & Character Mech HUD -->
+        <div class="lg:w-2/5 flex items-center justify-center relative">
+            <div class="relative w-80 h-80 sm:w-96 sm:h-96 flex items-center justify-center">
+
+                <!-- Rotating Radar Grid -->
+                <div
+                    class="absolute inset-0 rounded-full border border-hud-cyan/20 animate-radar-sweep pointer-events-none">
+                </div>
+                <div class="absolute inset-6 rounded-full border border-dashed border-hud-crimson/30 animate-spin"
+                    style="animation-duration: 20s;"></div>
+                <div class="absolute inset-16 rounded-full border border-hud-amber/30 animate-spin"
+                    style="animation-duration: 15s; animation-direction: reverse;"></div>
+
+                <!-- Central 3D Holo Core Box -->
+                <div
+                    class="hud-panel p-8 rounded-3xl border-hud-cyan/50 text-center relative z-10 shadow-[0_0_50px_rgba(0,240,255,0.3)] target-orb">
+                    <div
+                        class="w-24 h-24 rounded-2xl bg-gradient-to-tr from-hud-cyan via-hud-crimson to-hud-amber p-[2px] mx-auto mb-4">
+                        <div class="w-full h-full bg-[#080d1a] rounded-2xl flex items-center justify-center">
+                            <i data-lucide="cpu" class="w-12 h-12 text-hud-cyan animate-pulse"></i>
+                        </div>
+                    </div>
+
+                    <h3 class="font-game font-black text-xl text-white">FLUTTER HYPER-CORE</h3>
+                    <p class="font-mono text-xs text-hud-cyan mt-1">DART 3.x // REACTIVE COMPILATION</p>
+
+                    <div
+                        class="mt-4 pt-4 border-t border-white/10 flex items-center justify-between font-mono text-[11px] text-slate-400">
+                        <span>FPS: <strong class="text-hud-neon">60 LOCKED</strong></span>
+                        <span>LATENCY: <strong class="text-hud-cyan">0.4ms</strong></span>
+                    </div>
+                </div>
+
+                <!-- Orbiting Loot Tags -->
+                <div
+                    class="absolute -top-3 -right-4 hud-panel px-3.5 py-2 border-hud-amber text-hud-amber font-mono text-xs flex items-center gap-2">
+                    <i data-lucide="flame" class="w-3.5 h-3.5"></i> AWS CERTIFIED
+                </div>
+                <div
+                    class="absolute -bottom-4 -left-4 hud-panel px-3.5 py-2 border-hud-crimson text-hud-crimson font-mono text-xs flex items-center gap-2">
+                    <i data-lucide="terminal" class="w-3.5 h-3.5"></i> RED HAT AD141
+                </div>
+
+            </div>
+        </div>
+
+    </section>
+
+    <!-- SECTION 01: TALENT TREE // SKILLS & POWER-UPS -->
+    <section id="skills-tree" class="py-32 px-4 sm:px-8 max-w-7xl mx-auto relative z-10 border-t border-hud-cyan/20">
+
+        <div class="text-center max-w-3xl mx-auto space-y-4 mb-20">
+            <div class="inline-flex items-center gap-2 font-mono text-xs text-hud-amber uppercase tracking-[0.3em]">
+                <i data-lucide="zap" class="w-3.5 h-3.5"></i> SKILL MATRIX // TIER 4 UNLOCKED
+            </div>
+            <h2 class="font-game font-black text-4xl sm:text-6xl text-white">
+                TALENT <span class="text-hud-cyan neon-text-cyan">TREE</span>
+            </h2>
+            <p class="font-tactical text-lg text-slate-400">Upgrade slots and ability loadouts mastered across 4+ years
+                of systems architecture.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+            <!-- Skill Node 1: Mobile Warfare -->
+            <div class="hud-panel p-8 rounded-2xl hud-card-hover border-hud-cyan/40 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-6">
+                        <div
+                            class="w-14 h-14 rounded-xl bg-hud-cyan/10 border border-hud-cyan flex items-center justify-center text-hud-cyan shadow-[0_0_20px_rgba(0,240,255,0.3)]">
+                            <i data-lucide="smartphone" class="w-7 h-7"></i>
+                        </div>
+                        <span
+                            class="font-mono text-xs text-hud-cyan border border-hud-cyan/40 px-2.5 py-1 rounded">BRANCH:
+                            MOBILE</span>
+                    </div>
+
+                    <h3 class="font-game font-bold text-2xl text-white mb-2">FLUTTER WARFARE</h3>
+                    <p class="font-tactical text-slate-300 text-sm mb-6">Mastery over high-frequency UI rendering,
+                        smooth state transitions, and responsive multi-screen layout mechanics.</p>
+
+                    <div class="space-y-4 font-mono text-xs">
+                        <div>
+                            <div class="flex justify-between text-slate-300 mb-1">
+                                <span>FLUTTER & DART CORE</span>
+                                <span class="text-hud-cyan font-bold">LEVEL 95</span>
+                            </div>
+                            <div class="w-full h-2 bg-black/80 border border-hud-cyan/30 rounded-sm overflow-hidden">
+                                <div class="h-full bg-hud-cyan w-[95%]"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-slate-300 mb-1">
+                                <span>STATE (PROVIDER / SETSTATE)</span>
+                                <span class="text-hud-cyan font-bold">LEVEL 90</span>
+                            </div>
+                            <div class="w-full h-2 bg-black/80 border border-hud-cyan/30 rounded-sm overflow-hidden">
+                                <div class="h-full bg-hud-cyan w-[90%]"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-slate-300 mb-1">
+                                <span>MATERIAL 3 & CUSTOM CANVAS</span>
+                                <span class="text-hud-cyan font-bold">LEVEL 92</span>
+                            </div>
+                            <div class="w-full h-2 bg-black/80 border border-hud-cyan/30 rounded-sm overflow-hidden">
+                                <div class="h-full bg-hud-cyan w-[92%]"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    class="pt-6 mt-6 border-t border-white/10 flex items-center justify-between font-mono text-xs text-slate-400">
+                    <span>COOLDOWN: 0s</span>
+                    <span class="text-hud-neon font-bold">PASSIVE: READY</span>
+                </div>
+            </div>
+
+            <!-- Skill Node 2: Cloud & Backend Netcode -->
+            <div class="hud-panel p-8 rounded-2xl hud-card-hover border-hud-amber/40 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-6">
+                        <div
+                            class="w-14 h-14 rounded-xl bg-hud-amber/10 border border-hud-amber flex items-center justify-center text-hud-amber shadow-[0_0_20px_rgba(255,183,3,0.3)]">
+                            <i data-lucide="database" class="w-7 h-7"></i>
+                        </div>
+                        <span
+                            class="font-mono text-xs text-hud-amber border border-hud-amber/40 px-2.5 py-1 rounded">BRANCH:
+                            NETCODE</span>
+                    </div>
+
+                    <h3 class="font-game font-bold text-2xl text-white mb-2">CLOUD ARCHITECTURE</h3>
+                    <p class="font-tactical text-slate-300 text-sm mb-6">Real-time database replication, distributed
+                        authentication channels, and multi-region AWS cloud pipelines.</p>
+
+                    <div class="space-y-4 font-mono text-xs">
+                        <div>
+                            <div class="flex justify-between text-slate-300 mb-1">
+                                <span>FIREBASE & FIRESTORE</span>
+                                <span class="text-hud-amber font-bold">LEVEL 88</span>
+                            </div>
+                            <div class="w-full h-2 bg-black/80 border border-hud-amber/30 rounded-sm overflow-hidden">
+                                <div class="h-full bg-hud-amber w-[88%]"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-slate-300 mb-1">
+                                <span>REST APIS & JSON PIPELINES</span>
+                                <span class="text-hud-amber font-bold">LEVEL 94</span>
+                            </div>
+                            <div class="w-full h-2 bg-black/80 border border-hud-amber/30 rounded-sm overflow-hidden">
+                                <div class="h-full bg-hud-amber w-[94%]"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-slate-300 mb-1">
+                                <span>AWS CLOUD INFRA</span>
+                                <span class="text-hud-amber font-bold">LEVEL 85</span>
+                            </div>
+                            <div class="w-full h-2 bg-black/80 border border-hud-amber/30 rounded-sm overflow-hidden">
+                                <div class="h-full bg-hud-amber w-[85%]"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    class="pt-6 mt-6 border-t border-white/10 flex items-center justify-between font-mono text-xs text-slate-400">
+                    <span>COOLDOWN: 0s</span>
+                    <span class="text-hud-neon font-bold">PASSIVE: READY</span>
+                </div>
+            </div>
+
+            <!-- Skill Node 3: Algorithms & Systems Intelligence -->
+            <div class="hud-panel p-8 rounded-2xl hud-card-hover border-hud-crimson/40 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-6">
+                        <div
+                            class="w-14 h-14 rounded-xl bg-hud-crimson/10 border border-hud-crimson flex items-center justify-center text-hud-crimson shadow-[0_0_20px_rgba(255,0,60,0.3)]">
+                            <i data-lucide="cpu" class="w-7 h-7"></i>
+                        </div>
+                        <span
+                            class="font-mono text-xs text-hud-crimson border border-hud-crimson/40 px-2.5 py-1 rounded">BRANCH:
+                            CORE INTELLIGENCE</span>
+                    </div>
+
+                    <h3 class="font-game font-bold text-2xl text-white mb-2">SYSTEMS & LOGIC</h3>
+                    <p class="font-tactical text-slate-300 text-sm mb-6">Deep OOP object modeling, Red Hat enterprise
+                        Python execution, algorithmic efficiency, and on-device machine learning.</p>
+
+                    <div class="space-y-4 font-mono text-xs">
+                        <div>
+                            <div class="flex justify-between text-slate-300 mb-1">
+                                <span>PYTHON (RED HAT AD141)</span>
+                                <span class="text-hud-crimson font-bold">LEVEL 90</span>
+                            </div>
+                            <div class="w-full h-2 bg-black/80 border border-hud-crimson/30 rounded-sm overflow-hidden">
+                                <div class="h-full bg-hud-crimson w-[90%]"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-slate-300 mb-1">
+                                <span>OOP & DATA STRUCTURES</span>
+                                <span class="text-hud-crimson font-bold">LEVEL 88</span>
+                            </div>
+                            <div class="w-full h-2 bg-black/80 border border-hud-crimson/30 rounded-sm overflow-hidden">
+                                <div class="h-full bg-hud-crimson w-[88%]"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-slate-300 mb-1">
+                                <span>ETHICAL SECURITY / LINUX</span>
+                                <span class="text-hud-crimson font-bold">LEVEL 86</span>
+                            </div>
+                            <div class="w-full h-2 bg-black/80 border border-hud-crimson/30 rounded-sm overflow-hidden">
+                                <div class="h-full bg-hud-crimson w-[86%]"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    class="pt-6 mt-6 border-t border-white/10 flex items-center justify-between font-mono text-xs text-slate-400">
+                    <span>COOLDOWN: 0s</span>
+                    <span class="text-hud-neon font-bold">PASSIVE: READY</span>
+                </div>
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- SECTION 02: CAMPAIGNS // FEATURED PROJECTS -->
+    <section id="quests" class="py-32 px-4 sm:px-8 max-w-7xl mx-auto relative z-10 border-t border-hud-cyan/20">
+
+        <div class="text-center max-w-3xl mx-auto space-y-4 mb-20">
+            <div class="inline-flex items-center gap-2 font-mono text-xs text-hud-crimson uppercase tracking-[0.3em]">
+                <i data-lucide="shield-alert" class="w-3.5 h-3.5"></i> ACTIVE CAMPAIGNS // 3 DEPLOYMENTS
+            </div>
+            <h2 class="font-game font-black text-4xl sm:text-6xl text-white">
+                FEATURED <span class="text-hud-crimson neon-text-crimson">CAMPAIGNS</span>
+            </h2>
+            <p class="font-tactical text-lg text-slate-400">Verified code releases delivered for public execution and
+                scrutiny.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+            <!-- Campaign 1: DecisionSense -->
+            <div
+                class="hud-panel p-8 rounded-2xl flex flex-col justify-between hud-card-hover border-hud-cyan/50 rarity-legendary">
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <span
+                            class="font-mono text-xs bg-hud-amber/20 border border-hud-amber text-hud-amber px-2.5 py-1 rounded uppercase tracking-wider font-bold">
+                            LEGENDARY DEPLOYMENT
+                        </span>
+                        <span class="font-mono text-xs text-slate-400">DIFFICULTY: HARD</span>
+                    </div>
+
+                    <div
+                        class="w-full h-48 bg-black/80 border border-hud-cyan/30 rounded-xl mb-6 flex items-center justify-center relative overflow-hidden group">
+                        <div class="absolute inset-0 bg-gradient-to-t from-hud-cyan/20 to-transparent"></div>
+                        <i data-lucide="brain-circuit"
+                            class="w-20 h-20 text-hud-cyan group-hover:scale-125 transition-transform duration-500"></i>
+                    </div>
+
+                    <h3 class="font-game font-bold text-2xl text-white mb-2">DECISIONSENSE</h3>
+                    <p class="font-tactical text-slate-300 text-sm mb-6 leading-relaxed">
+                        An AI-driven mobile client in Flutter architected to decode cognitive biases, log rational
+                        decision pathways, and execute on-device privacy-first intelligence.
+                    </p>
+
+                    <div class="flex flex-wrap gap-2 mb-6 font-mono text-[11px]">
+                        <span class="px-2 py-1 bg-white/5 border border-white/10 text-hud-cyan rounded">FLUTTER</span>
+                        <span class="px-2 py-1 bg-white/5 border border-white/10 text-hud-amber rounded">ON-DEVICE
+                            AI</span>
+                        <span class="px-2 py-1 bg-white/5 border border-white/10 text-hud-neon rounded">SECURE
+                            CACHE</span>
+                    </div>
+                </div>
+
+                <a href="https://www.mediafire.com/file/u36ki376kxl997q/decision_sense.apk/file" target="_blank"
+                    class="w-full py-4 bg-hud-cyan hover:bg-white text-black font-game font-black text-xs uppercase tracking-widest text-center shadow-[0_0_20px_rgba(0,240,255,0.6)] transition flex items-center justify-center gap-2">
+                    <i data-lucide="download" class="w-4 h-4"></i> LOOT APK FILE
+                </a>
+            </div>
+
+            <!-- Campaign 2: Mental Health Assistant -->
+            <div
+                class="hud-panel p-8 rounded-2xl flex flex-col justify-between hud-card-hover border-hud-purple/50 rarity-epic">
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <span
+                            class="font-mono text-xs bg-hud-purple/20 border border-hud-purple text-hud-purple px-2.5 py-1 rounded uppercase tracking-wider font-bold">
+                            EPIC CAMPAIGN
+                        </span>
+                        <span class="font-mono text-xs text-slate-400">DIFFICULTY: MEDIUM</span>
+                    </div>
+
+                    <div
+                        class="w-full h-48 bg-black/80 border border-hud-purple/30 rounded-xl mb-6 flex items-center justify-center relative overflow-hidden group">
+                        <div class="absolute inset-0 bg-gradient-to-t from-hud-purple/20 to-transparent"></div>
+                        <i data-lucide="bot"
+                            class="w-20 h-20 text-hud-purple group-hover:scale-125 transition-transform duration-500"></i>
+                    </div>
+
+                    <h3 class="font-game font-bold text-2xl text-white mb-2">MENTAL HEALTH COMPANION</h3>
+                    <p class="font-tactical text-slate-300 text-sm mb-6 leading-relaxed">
+                        An empathetic conversational agent designed in Flutter providing real-time cognitive
+                        stress-relief routines, dynamic mood graphs, and calming UX flows.
+                    </p>
+
+                    <div class="flex flex-wrap gap-2 mb-6 font-mono text-[11px]">
+                        <span class="px-2 py-1 bg-white/5 border border-white/10 text-hud-cyan rounded">FLUTTER</span>
+                        <span class="px-2 py-1 bg-white/5 border border-white/10 text-hud-purple rounded">CHATBOT
+                            ENGINE</span>
+                        <span class="px-2 py-1 bg-white/5 border border-white/10 text-slate-300 rounded">MATERIAL
+                            3</span>
+                    </div>
+                </div>
+
+                <a href="https://github.com/HcxUi/Mental-Health-Assistant.git" target="_blank"
+                    class="w-full py-4 bg-transparent border border-hud-purple text-hud-purple hover:bg-hud-purple hover:text-black font-game font-black text-xs uppercase tracking-widest text-center shadow-[0_0_20px_rgba(176,38,255,0.4)] transition flex items-center justify-center gap-2">
+                    <i data-lucide="github" class="w-4 h-4"></i> INSPECT REPO CODE
+                </a>
+            </div>
+
+            <!-- Campaign 3: DataStore Notes -->
+            <div
+                class="hud-panel p-8 rounded-2xl flex flex-col justify-between hud-card-hover border-hud-cyan/50 rarity-rare">
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <span
+                            class="font-mono text-xs bg-hud-cyan/20 border border-hud-cyan text-hud-cyan px-2.5 py-1 rounded uppercase tracking-wider font-bold">
+                            RARE BLUEPRINT
+                        </span>
+                        <span class="font-mono text-xs text-slate-400">DIFFICULTY: NORMAL</span>
+                    </div>
+
+                    <div
+                        class="w-full h-48 bg-black/80 border border-hud-cyan/30 rounded-xl mb-6 flex items-center justify-center relative overflow-hidden group">
+                        <div class="absolute inset-0 bg-gradient-to-t from-hud-cyan/20 to-transparent"></div>
+                        <i data-lucide="edit-3"
+                            class="w-20 h-20 text-hud-cyan group-hover:scale-125 transition-transform duration-500"></i>
+                    </div>
+
+                    <h3 class="font-game font-bold text-2xl text-white mb-2">DATASTORE NOTES</h3>
+                    <p class="font-tactical text-slate-300 text-sm mb-6 leading-relaxed">
+                        A resilient offline-first Flutter application executing instant CRUD actions, adaptive tablet
+                        tile grids, and persistent local storage synchronization.
+                    </p>
+
+                    <div class="flex flex-wrap gap-2 mb-6 font-mono text-[11px]">
+                        <span class="px-2 py-1 bg-white/5 border border-white/10 text-hud-cyan rounded">FLUTTER</span>
+                        <span class="px-2 py-1 bg-white/5 border border-white/10 text-hud-cyan rounded">PROVIDER
+                            STATE</span>
+                        <span class="px-2 py-1 bg-white/5 border border-white/10 text-slate-300 rounded">SQLITE
+                            CACHE</span>
+                    </div>
+                </div>
+
+                <a href="https://github.com/HcxUi/notes_app.git" target="_blank"
+                    class="w-full py-4 bg-transparent border border-hud-cyan text-hud-cyan hover:bg-hud-cyan hover:text-black font-game font-black text-xs uppercase tracking-widest text-center shadow-[0_0_20px_rgba(0,240,255,0.4)] transition flex items-center justify-center gap-2">
+                    <i data-lucide="github" class="w-4 h-4"></i> INSPECT REPO CODE
+                </a>
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- SECTION 03: LOOT VAULT // 11 VERIFIED CERTIFICATE TROPHIES -->
+    <section id="loot-vault" class="py-32 px-4 sm:px-8 max-w-7xl mx-auto relative z-10 border-t border-hud-cyan/20">
+
+        <div class="text-center max-w-3xl mx-auto space-y-4 mb-20">
+            <div class="inline-flex items-center gap-2 font-mono text-xs text-hud-amber uppercase tracking-[0.3em]">
+                <i data-lucide="award" class="w-3.5 h-3.5"></i> INVENTORY // 11/11 TROPHIES UNLOCKED
+            </div>
+            <h2 class="font-game font-black text-4xl sm:text-6xl text-white">
+                LOOT <span class="text-hud-amber neon-text-amber">VAULT</span>
+            </h2>
+            <p class="font-tactical text-lg text-slate-400">Click any trophy artifact to launch the high-security
+                Cryptographic Inspector & live PDF decoder.</p>
+        </div>
+
+        <!-- Loot Grid: Exact 11 Verified Certificates -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+            <!-- Trophy 1 -->
+            <div data-file="AWS_Academy_Graduate_AWS_Academy_Cloud_Foundations_Badge20230726.pdf"
+                data-issuer="Amazon Web Services (AWS)" data-hours="20 Hours" data-issued="July 2023" data-icon="cloud"
+                data-rarity="LEGENDARY"
+                class="loot-card hud-panel p-6 rounded-2xl cursor-pointer hud-card-hover rarity-legendary">
+                <div class="flex justify-between items-start mb-4">
+                    <div
+                        class="w-12 h-12 rounded-xl bg-orange-500/20 text-orange-400 border border-orange-500/40 flex items-center justify-center">
+                        <i data-lucide="cloud" class="w-6 h-6"></i>
+                    </div>
+                    <span
+                        class="font-mono text-[10px] text-orange-400 bg-orange-500/10 border border-orange-500/30 px-2.5 py-1 rounded uppercase font-bold">LEGENDARY</span>
+                </div>
+                <h3 class="font-game font-bold text-lg text-white mb-1">AWS Cloud Foundations</h3>
+                <p class="font-tactical text-slate-400 text-xs">Amazon Web Services</p>
+                <div class="mt-4 pt-4 border-t border-white/10 flex justify-between font-mono text-xs text-slate-500">
+                    <span>20 HOURS</span>
+                    <span class="text-hud-cyan">JUL 2023</span>
+                </div>
+            </div>
+
+            <!-- Trophy 2 -->
+            <div data-file="CourseAttendance20251213-32-5u8cfk.pdf" data-issuer="Red Hat" data-hours="32 Hours"
+                data-issued="Dec 2025" data-icon="terminal" data-rarity="EPIC"
+                class="loot-card hud-panel p-6 rounded-2xl cursor-pointer hud-card-hover rarity-epic">
+                <div class="flex justify-between items-start mb-4">
+                    <div
+                        class="w-12 h-12 rounded-xl bg-red-500/20 text-red-400 border border-red-500/40 flex items-center justify-center">
+                        <i data-lucide="terminal" class="w-6 h-6"></i>
+                    </div>
+                    <span
+                        class="font-mono text-[10px] text-red-400 bg-red-500/10 border border-red-500/30 px-2.5 py-1 rounded uppercase font-bold">EPIC</span>
+                </div>
+                <h3 class="font-game font-bold text-lg text-white mb-1">Python Programming (AD141)</h3>
+                <p class="font-tactical text-slate-400 text-xs">Red Hat Enterprise</p>
+                <div class="mt-4 pt-4 border-t border-white/10 flex justify-between font-mono text-xs text-slate-500">
+                    <span>32 HOURS</span>
+                    <span class="text-hud-cyan">DEC 2025</span>
+                </div>
+            </div>
+
+            <!-- Trophy 3 -->
+            <div data-file="IntrotoModernAIUpdate20251219-32-tesfxq.pdf" data-issuer="Cisco Networking Academy"
+                data-hours="Verified Certificate" data-issued="Dec 2025" data-icon="bot" data-rarity="RARE"
+                class="loot-card hud-panel p-6 rounded-2xl cursor-pointer hud-card-hover rarity-rare">
+                <div class="flex justify-between items-start mb-4">
+                    <div
+                        class="w-12 h-12 rounded-xl bg-blue-500/20 text-blue-400 border border-blue-500/40 flex items-center justify-center">
+                        <i data-lucide="bot" class="w-6 h-6"></i>
+                    </div>
+                    <span
+                        class="font-mono text-[10px] text-hud-cyan bg-hud-cyan/10 border border-hud-cyan/30 px-2.5 py-1 rounded uppercase font-bold">RARE</span>
+                </div>
+                <h3 class="font-game font-bold text-lg text-white mb-1">Intro to Modern AI</h3>
+                <p class="font-tactical text-slate-400 text-xs">Cisco Networking Academy</p>
+                <div class="mt-4 pt-4 border-t border-white/10 flex justify-between font-mono text-xs text-slate-500">
+                    <span>ACADEMIC</span>
+                    <span class="text-hud-cyan">DEC 2025</span>
+                </div>
+            </div>
+
+            <!-- Trophy 4 -->
+            <div data-file="Ethical_Hacker_certificate.pdf" data-issuer="Cisco / SAGE" data-hours="Verified Certificate"
+                data-issued="Dec 2025" data-icon="shield-check" data-rarity="EPIC"
+                class="loot-card hud-panel p-6 rounded-2xl cursor-pointer hud-card-hover rarity-epic">
+                <div class="flex justify-between items-start mb-4">
+                    <div
+                        class="w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center justify-center">
+                        <i data-lucide="shield-check" class="w-6 h-6"></i>
+                    </div>
+                    <span
+                        class="font-mono text-[10px] text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2.5 py-1 rounded uppercase font-bold">EPIC</span>
+                </div>
+                <h3 class="font-game font-bold text-lg text-white mb-1">Ethical Hacker</h3>
+                <p class="font-tactical text-slate-400 text-xs">Cisco / SAGE University</p>
+                <div class="mt-4 pt-4 border-t border-white/10 flex justify-between font-mono text-xs text-slate-500">
+                    <span>DEFENSIVE</span>
+                    <span class="text-hud-cyan">DEC 2025</span>
+                </div>
+            </div>
+
+            <!-- Trophy 5 -->
+            <div data-file="photo_2026-06-12_19-26-32.jpg" data-issuer="The SAGE Group" data-hours="Winter School"
+                data-issued="March 2026" data-icon="cpu" data-rarity="RARE"
+                class="loot-card hud-panel p-6 rounded-2xl cursor-pointer hud-card-hover rarity-rare">
+                <div class="flex justify-between items-start mb-4">
+                    <div
+                        class="w-12 h-12 rounded-xl bg-purple-500/20 text-purple-400 border border-purple-500/40 flex items-center justify-center">
+                        <i data-lucide="cpu" class="w-6 h-6"></i>
+                    </div>
+                    <span
+                        class="font-mono text-[10px] text-purple-400 bg-purple-500/10 border border-purple-500/30 px-2.5 py-1 rounded uppercase font-bold">RARE</span>
+                </div>
+                <h3 class="font-game font-bold text-lg text-white mb-1">AI in Real-World Apps & DS</h3>
+                <p class="font-tactical text-slate-400 text-xs">SAGE Winter School</p>
+                <div class="mt-4 pt-4 border-t border-white/10 flex justify-between font-mono text-xs text-slate-500">
+                    <span>ADVANCED</span>
+                    <span class="text-hud-cyan">MAR 2026</span>
+                </div>
+            </div>
+
+            <!-- Trophy 6 -->
+            <div data-file="Certification.pdf" data-issuer="Ira Edu-Tech (MSME)" data-hours="3 Hours"
+                data-issued="July 2024" data-icon="sheet" data-rarity="COMMON"
+                class="loot-card hud-panel p-6 rounded-2xl cursor-pointer hud-card-hover">
+                <div class="flex justify-between items-start mb-4">
+                    <div
+                        class="w-12 h-12 rounded-xl bg-green-500/20 text-green-400 border border-green-500/40 flex items-center justify-center">
+                        <i data-lucide="sheet" class="w-6 h-6"></i>
+                    </div>
+                    <span
+                        class="font-mono text-[10px] text-green-400 bg-green-500/10 border border-green-500/30 px-2.5 py-1 rounded uppercase font-bold">VERIFIED</span>
+                </div>
+                <h3 class="font-game font-bold text-lg text-white mb-1">Advance MS Excel</h3>
+                <p class="font-tactical text-slate-400 text-xs">Ira Edu-Tech (MSME Recognized)</p>
+                <div class="mt-4 pt-4 border-t border-white/10 flex justify-between font-mono text-xs text-slate-500">
+                    <span>3 HOURS</span>
+                    <span class="text-hud-cyan">JUL 2024</span>
+                </div>
+            </div>
+
+            <!-- Trophy 7 -->
+            <div data-file="photo_2026-06-12_19-26-36.jpg" data-issuer="Wincom Technologies" data-hours="Diploma"
+                data-issued="July 2024" data-icon="award" data-rarity="EPIC"
+                class="loot-card hud-panel p-6 rounded-2xl cursor-pointer hud-card-hover rarity-epic">
+                <div class="flex justify-between items-start mb-4">
+                    <div
+                        class="w-12 h-12 rounded-xl bg-hud-cyan/20 text-hud-cyan border border-hud-cyan/40 flex items-center justify-center">
+                        <i data-lucide="award" class="w-6 h-6"></i>
+                    </div>
+                    <span
+                        class="font-mono text-[10px] text-hud-cyan bg-hud-cyan/10 border border-hud-cyan/30 px-2.5 py-1 rounded uppercase font-bold">EPIC</span>
+                </div>
+                <h3 class="font-game font-bold text-lg text-white mb-1">SAP Material Management</h3>
+                <p class="font-tactical text-slate-400 text-xs">Wincom Technologies</p>
+                <div class="mt-4 pt-4 border-t border-white/10 flex justify-between font-mono text-xs text-slate-500">
+                    <span>GRADE A+</span>
+                    <span class="text-hud-cyan">JUL 2024</span>
+                </div>
+            </div>
+
+            <!-- Trophy 8 -->
+            <div data-file="Software Testing Training - Certificate of Completion.pdf"
+                data-issuer="Internshala Trainings" data-hours="6 Weeks" data-issued="June 2025"
+                data-icon="check-circle" data-rarity="RARE"
+                class="loot-card hud-panel p-6 rounded-2xl cursor-pointer hud-card-hover rarity-rare">
+                <div class="flex justify-between items-start mb-4">
+                    <div
+                        class="w-12 h-12 rounded-xl bg-yellow-500/20 text-yellow-400 border border-yellow-500/40 flex items-center justify-center">
+                        <i data-lucide="check-circle" class="w-6 h-6"></i>
+                    </div>
+                    <span
+                        class="font-mono text-[10px] text-yellow-400 bg-yellow-500/10 border border-yellow-500/30 px-2.5 py-1 rounded uppercase font-bold">RARE</span>
+                </div>
+                <h3 class="font-game font-bold text-lg text-white mb-1">Software Testing Lifecycle</h3>
+                <p class="font-tactical text-slate-400 text-xs">Internshala Trainings</p>
+                <div class="mt-4 pt-4 border-t border-white/10 flex justify-between font-mono text-xs text-slate-500">
+                    <span>6 WEEKS</span>
+                    <span class="text-hud-cyan">JUN 2025</span>
+                </div>
+            </div>
+
+            <!-- Trophy 9 -->
+            <div data-file="Certificate Python Ai.pdf" data-issuer="AI FOR TECHIES" data-hours="3 Hours"
+                data-issued="Feb 2025" data-icon="sparkles" data-rarity="RARE"
+                class="loot-card hud-panel p-6 rounded-2xl cursor-pointer hud-card-hover rarity-rare">
+                <div class="flex justify-between items-start mb-4">
+                    <div
+                        class="w-12 h-12 rounded-xl bg-pink-500/20 text-pink-400 border border-pink-500/40 flex items-center justify-center">
+                        <i data-lucide="sparkles" class="w-6 h-6"></i>
+                    </div>
+                    <span
+                        class="font-mono text-[10px] text-pink-400 bg-pink-500/10 border border-pink-500/30 px-2.5 py-1 rounded uppercase font-bold">RARE</span>
+                </div>
+                <h3 class="font-game font-bold text-lg text-white mb-1">Python & AI Masterclass</h3>
+                <p class="font-tactical text-slate-400 text-xs">AI For Techies</p>
+                <div class="mt-4 pt-4 border-t border-white/10 flex justify-between font-mono text-xs text-slate-500">
+                    <span>3 HOURS</span>
+                    <span class="text-hud-cyan">FEB 2025</span>
+                </div>
+            </div>
+
+            <!-- Trophy 10 -->
+            <div data-file="IOT certificate.jpg" data-issuer="The SAGE Group" data-hours="Winter School"
+                data-issued="March 2025" data-icon="cpu" data-rarity="RARE"
+                class="loot-card hud-panel p-6 rounded-2xl cursor-pointer hud-card-hover rarity-rare">
+                <div class="flex justify-between items-start mb-4">
+                    <div
+                        class="w-12 h-12 rounded-xl bg-purple-500/20 text-purple-400 border border-purple-500/40 flex items-center justify-center">
+                        <i data-lucide="cpu" class="w-6 h-6"></i>
+                    </div>
+                    <span
+                        class="font-mono text-[10px] text-purple-400 bg-purple-500/10 border border-purple-500/30 px-2.5 py-1 rounded uppercase font-bold">RARE</span>
+                </div>
+                <h3 class="font-game font-bold text-lg text-white mb-1">ML with IoT Applications</h3>
+                <p class="font-tactical text-slate-400 text-xs">SAGE Winter School</p>
+                <div class="mt-4 pt-4 border-t border-white/10 flex justify-between font-mono text-xs text-slate-500">
+                    <span>EDGE AI</span>
+                    <span class="text-hud-cyan">MAR 2025</span>
+                </div>
+            </div>
+
+            <!-- Trophy 11 -->
+            <div data-file="Azure Fundamentals.pdf" data-issuer="Microsoft Azure" data-hours="AZ-900 Track"
+                data-issued="2026" data-icon="cloud-lightning" data-rarity="LEGENDARY"
+                class="loot-card hud-panel p-6 rounded-2xl cursor-pointer hud-card-hover rarity-legendary">
+                <div class="flex justify-between items-start mb-4">
+                    <div
+                        class="w-12 h-12 rounded-xl bg-cyan-400/20 text-cyan-300 border border-cyan-400/40 flex items-center justify-center">
+                        <i data-lucide="cloud-lightning" class="w-6 h-6"></i>
+                    </div>
+                    <span
+                        class="font-mono text-[10px] text-cyan-300 bg-cyan-400/10 border border-cyan-400/30 px-2.5 py-1 rounded uppercase font-bold">LEGENDARY</span>
+                </div>
+                <h3 class="font-game font-bold text-lg text-white mb-1">Azure Cloud Fundamentals</h3>
+                <p class="font-tactical text-slate-400 text-xs">Microsoft Azure</p>
+                <div class="mt-4 pt-4 border-t border-white/10 flex justify-between font-mono text-xs text-slate-500">
+                    <span>AZ-900</span>
+                    <span class="text-hud-cyan">2026</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Banner for 6-Month Flutter Training -->
+        <div
+            class="mt-12 hud-panel p-6 rounded-2xl border-hud-cyan/50 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-[0_0_30px_rgba(0,240,255,0.2)]">
+            <div class="flex items-center gap-4">
+                <div
+                    class="w-12 h-12 rounded-xl bg-hud-cyan/20 border border-hud-cyan text-hud-cyan flex items-center justify-center flex-shrink-0">
+                    <i data-lucide="crown" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <span class="font-mono text-xs text-hud-amber uppercase tracking-wider block">PRESTIGE
+                        SPECIALIZATION</span>
+                    <h4 class="font-game font-bold text-white text-lg">FLUTTER HYPER-DEVELOPMENT (6 MONTHS RIGOROUS
+                        ENGINE)</h4>
+                </div>
+            </div>
+            <span
+                class="font-mono text-xs text-hud-neon border border-hud-neon/40 px-3 py-1.5 rounded bg-hud-neon/10 font-bold">
+                100% MASTERY
+            </span>
+        </div>
+
+    </section>
+
+    <!-- SECTION 04: AI TACTICAL RECRUITER HUD & JD COMPANION -->
+    <section id="terminal-ai" class="py-32 px-4 sm:px-8 max-w-6xl mx-auto relative z-10 border-t border-hud-cyan/20">
+
+        <div class="text-center max-w-3xl mx-auto space-y-4 mb-16">
+            <div class="inline-flex items-center gap-2 font-mono text-xs text-hud-cyan uppercase tracking-[0.3em]">
+                <i data-lucide="terminal" class="w-3.5 h-3.5"></i> NEURAL NETWORK INTERFACE
+            </div>
+            <h2 class="font-game font-black text-4xl sm:text-6xl text-white">
+                TACTICAL <span class="text-hud-cyan neon-text-cyan">COMPANION</span>
+            </h2>
+            <p class="font-tactical text-lg text-slate-400">Directly interrogate Kunal's neural twin or feed your target
+                Job Description into the combat fit matrix.</p>
+        </div>
+
+        <div
+            class="hud-panel rounded-3xl border-hud-cyan/40 overflow-hidden flex flex-col lg:flex-row h-[700px] shadow-[0_0_60px_rgba(0,0,0,0.9)]">
+
+            <!-- Left Command Deck -->
+            <div
+                class="w-full lg:w-72 bg-black/80 border-b lg:border-b-0 lg:border-r border-hud-cyan/30 p-5 flex lg:flex-col justify-between flex-shrink-0">
+                <div class="space-y-4 w-full">
+                    <span class="font-mono text-[10px] text-slate-500 uppercase tracking-widest block mb-2">INTERFACE
+                        MODE</span>
+
+                    <button id="ai-mode-chat"
+                        class="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl font-game font-bold text-xs uppercase tracking-wider transition bg-hud-cyan text-black shadow-[0_0_20px_rgba(0,240,255,0.6)]">
+                        <i data-lucide="bot" class="w-4 h-4"></i>
+                        <span>AI COMPANION</span>
+                    </button>
+
+                    <button id="ai-mode-jd"
+                        class="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl font-game font-bold text-xs uppercase tracking-wider transition text-slate-400 hover:text-white hover:bg-white/5 border border-transparent hover:border-white/10">
+                        <i data-lucide="scan-line" class="w-4 h-4"></i>
+                        <span>JD COMPAT MATRIX</span>
+                    </button>
+                </div>
+
+                <div
+                    class="hidden lg:block pt-6 border-t border-white/10 font-mono text-[10px] text-slate-500 space-y-1">
+                    <div>AI HOST: <span class="text-hud-cyan">GEMINI 2.5 FLASH</span></div>
+                    <div>NEURAL SYNC: <span class="text-hud-neon">100% ONLINE</span></div>
+                    <div>LATENCY: <span class="text-hud-amber">18ms</span></div>
+                </div>
+            </div>
+
+            <!-- Right Terminal Screen -->
+            <div class="flex-grow flex flex-col h-full bg-[#030612]/90 relative overflow-hidden">
+
+                <!-- Chat View -->
+                <div id="ai-chat-view" class="flex flex-col h-full">
+
+                    <!-- Top Status Strip -->
+                    <div class="px-6 py-4 border-b border-hud-cyan/20 bg-black/40 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <span class="w-2.5 h-2.5 rounded-full bg-hud-neon animate-pulse"></span>
+                            <span class="font-game text-xs text-white font-bold">VIRTUAL KUNAL // TACTICAL AGENT</span>
+                        </div>
+                        <button id="clear-log-btn" class="text-slate-400 hover:text-hud-cyan p-1.5 rounded transition"
+                            title="Clear Chat Buffer">
+                            <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+
+                    <!-- Messages Window -->
+                    <div id="ai-log-stream"
+                        class="flex-grow overflow-y-auto p-6 space-y-5 font-mono text-xs sm:text-sm">
+                        <div class="flex items-start gap-3.5 max-w-[85%]">
+                            <div
+                                class="w-8 h-8 rounded-lg bg-hud-cyan text-black flex items-center justify-center font-bold text-xs flex-shrink-0">
+                                AI
+                            </div>
+                            <div
+                                class="p-4 rounded-xl bg-white/5 border border-hud-cyan/30 text-slate-200 leading-relaxed">
+                                <span class="text-hud-cyan font-bold block mb-1">SYSTEM LINK ESTABLISHED:</span>
+                                Operator active. I am Kunal's tactical digital counterpart. Ready to address queries
+                                regarding his Flutter architectural experience, cloud pipelines, or arrange an executive
+                                appointment. What is your directive?
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Rapid Prompt Badges -->
+                    <div
+                        class="px-6 py-2.5 border-t border-white/10 bg-black/60 flex items-center gap-2 overflow-x-auto no-scrollbar">
+                        <button
+                            class="ai-chip px-3 py-1.5 rounded bg-white/5 hover:bg-hud-cyan/20 border border-white/10 text-slate-300 hover:text-hud-cyan transition font-mono text-xs whitespace-nowrap">
+                            What makes DecisionSense unique?
+                        </button>
+                        <button
+                            class="ai-chip px-3 py-1.5 rounded bg-white/5 hover:bg-hud-cyan/20 border border-white/10 text-slate-300 hover:text-hud-cyan transition font-mono text-xs whitespace-nowrap">
+                            Can you handle Provider & clean state?
+                        </button>
+                        <button
+                            class="ai-chip px-3 py-1.5 rounded bg-white/5 hover:bg-hud-cyan/20 border border-white/10 text-slate-300 hover:text-hud-cyan transition font-mono text-xs whitespace-nowrap">
+                            Red Hat Python certification scope?
+                        </button>
+                    </div>
+
+                    <!-- Command Input Bar -->
+                    <form id="ai-input-form"
+                        class="p-4 border-t border-hud-cyan/30 bg-black/80 flex items-center gap-3">
+                        <span class="text-hud-cyan font-mono text-lg font-bold pl-2">></span>
+                        <input type="text" id="ai-user-query" placeholder="Enter tactical query..."
+                            class="flex-grow px-4 py-3 rounded-lg bg-white/5 border border-hud-cyan/30 text-white font-mono text-xs sm:text-sm focus:outline-none focus:border-hud-cyan placeholder-slate-600">
+                        <button type="submit"
+                            class="px-6 py-3 bg-hud-cyan hover:bg-white text-black font-game font-black text-xs uppercase tracking-wider transition shadow-[0_0_20px_rgba(0,240,255,0.6)] flex items-center gap-2 flex-shrink-0">
+                            <span>TRANSMIT</span>
+                            <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                        </button>
+                    </form>
+
+                </div>
+
+                <!-- JD Matcher View -->
+                <div id="ai-jd-view" class="hidden flex flex-col h-full p-6">
+                    <div class="flex-grow flex flex-col lg:flex-row gap-6 overflow-hidden">
+
+                        <div class="lg:w-1/2 flex flex-col gap-3 h-full">
+                            <label for="jd-payload"
+                                class="font-mono text-xs text-hud-amber uppercase tracking-widest flex items-center gap-2">
+                                <i data-lucide="file-code" class="w-4 h-4"></i> INPUT JOB DESCRIPTION PAYLOAD
+                            </label>
+                            <textarea id="jd-payload" placeholder="Paste the exact Job Description requirements here..."
+                                class="flex-grow p-4 rounded-xl bg-black/60 border border-hud-amber/30 text-slate-200 font-mono text-xs leading-relaxed focus:outline-none focus:border-hud-amber resize-none placeholder-slate-600"></textarea>
+                            <button id="compute-fit-btn"
+                                class="w-full py-4 bg-hud-amber hover:bg-white text-black font-game font-black text-xs uppercase tracking-widest shadow-[0_0_25px_rgba(255,183,3,0.6)] transition flex items-center justify-center gap-2 flex-shrink-0">
+                                <i data-lucide="cpu" class="w-4 h-4"></i> COMPUTE COMPATIBILITY MATRIX
+                            </button>
+                        </div>
+
+                        <div
+                            class="lg:w-1/2 flex flex-col gap-3 h-full border-t lg:border-t-0 lg:border-l border-white/10 pt-4 lg:pt-0 lg:pl-6">
+                            <span
+                                class="font-mono text-xs text-hud-cyan uppercase tracking-widest flex items-center gap-2">
+                                <i data-lucide="pie-chart" class="w-4 h-4"></i> TACTICAL FIT REPORT
+                            </span>
+                            <div id="jd-result-deck"
+                                class="flex-grow bg-black/60 border border-hud-cyan/20 rounded-xl p-6 overflow-y-auto font-tactical text-slate-300 leading-relaxed">
+                                <div
+                                    class="flex flex-col items-center justify-center h-full text-slate-600 text-center gap-3">
+                                    <i data-lucide="crosshair" class="w-12 h-12 text-slate-700 animate-spin"
+                                        style="animation-duration: 20s;"></i>
+                                    <p class="font-mono text-xs">AWAITING TARGET JD PAYLOAD FOR RECONNAISSANCE...</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- SECTION 05: EXTRACTION POINT // CONTACT -->
+    <section id="extraction" class="py-32 px-4 sm:px-8 max-w-5xl mx-auto relative z-10 border-t border-hud-cyan/20">
+        <div
+            class="hud-panel p-10 sm:p-16 rounded-3xl border-hud-cyan/40 text-center relative overflow-hidden shadow-[0_0_80px_rgba(0,240,255,0.2)]">
+
+            <div
+                class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded bg-hud-neon/10 border border-hud-neon text-hud-neon font-mono text-xs uppercase tracking-widest mb-6">
+                <span class="w-2 h-2 rounded-full bg-hud-neon animate-ping"></span>
+                EXTRACTION FREQUENCIES OPEN
+            </div>
+
+            <h2 class="font-game font-black text-4xl sm:text-6xl text-white mb-4">
+                INITIATE <span class="text-hud-cyan neon-text-cyan">CONTACT</span>
+            </h2>
+
+            <p class="font-tactical text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed mb-10">
+                Ready for active engineering missions, full-time contracts, and high-impact mobile development
+                challenges.
+            </p>
+
+            <div class="flex flex-wrap items-center justify-center gap-5">
+                <a href="mailto:Kunalsinghsisodiya9378@gmail.com"
+                    class="px-8 py-4 bg-hud-cyan hover:bg-white text-black font-game font-bold text-xs uppercase tracking-widest shadow-[0_0_25px_rgba(0,240,255,0.8)] transition flex items-center gap-2">
+                    <i data-lucide="mail" class="w-4 h-4"></i> TRANSMIT EMAIL
+                </a>
+
+                <a href="tel:7389164258"
+                    class="px-8 py-4 bg-black/80 border border-hud-amber text-hud-amber hover:bg-hud-amber hover:text-black font-game font-bold text-xs uppercase tracking-widest shadow-[0_0_25px_rgba(255,183,3,0.3)] transition flex items-center gap-2">
+                    <i data-lucide="phone" class="w-4 h-4"></i> +91 73891 64258
+                </a>
+
+                <a href="https://github.com/Hcxui" target="_blank"
+                    class="px-8 py-4 bg-black/80 border border-white/20 text-white hover:border-hud-cyan font-game font-bold text-xs uppercase tracking-widest transition flex items-center gap-2">
+                    <i data-lucide="github" class="w-4 h-4 text-hud-cyan"></i> GITHUB ARSENAL
+                </a>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- FOOTER HUD -->
+    <footer class="py-12 border-t border-white/10 bg-[#02050e] relative z-10 font-mono text-xs text-slate-500">
+        <div class="max-w-7xl mx-auto px-4 sm:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-3">
+                <span class="w-3 h-3 bg-hud-cyan rounded-full"></span>
+                <span>PROTOCOL: SISODIYA &middot; ALL CORES NOMINAL</span>
+            </div>
+            <div>
+                GEO-TARGET: PITHAMPUR / INDORE &middot; TIME: <span id="clock-display"
+                    class="text-hud-cyan">--:--:--</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- INTERACTIVE TROPHY INSPECTOR MODAL -->
+    <div id="trophy-modal"
+        class="fixed inset-0 z-[999999] flex items-center justify-center p-4 bg-black/90 backdrop-blur-2xl hidden opacity-0 transition-opacity duration-300">
+        <div
+            class="hud-panel w-full max-w-5xl h-[88vh] rounded-3xl flex flex-col border-hud-cyan/50 shadow-[0_0_100px_rgba(0,240,255,0.3)] overflow-hidden transform scale-95 transition-transform duration-300">
+
+            <!-- Modal Header -->
+            <div
+                class="px-6 py-4 border-b border-hud-cyan/30 bg-black/60 flex flex-wrap items-center justify-between gap-4 flex-shrink-0">
+                <div>
+                    <h3 id="modal-trophy-name"
+                        class="font-game font-black text-white text-lg tracking-wider truncate max-w-md">TROPHY
+                        INSPECTION</h3>
+                    <p id="modal-trophy-meta" class="font-mono text-xs text-hud-cyan mt-0.5">ESTABLISHING SECURE
+                        DECODER...</p>
+                </div>
+
+                <div class="flex items-center bg-black/60 p-1 rounded-lg border border-hud-cyan/30 font-mono text-xs">
+                    <button id="modal-tab-badge" class="px-4 py-2 rounded font-bold bg-hud-cyan text-black transition">
+                        TACTICAL BADGE
+                    </button>
+                    <button id="modal-tab-raw"
+                        class="px-4 py-2 rounded font-bold text-slate-400 hover:text-white transition">
+                        RAW DOCUMENT
+                    </button>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <a id="modal-trophy-download" href="#" target="_blank" download
+                        class="px-4 py-2 rounded bg-hud-cyan/20 border border-hud-cyan text-hud-cyan hover:bg-hud-cyan hover:text-black font-mono text-xs transition flex items-center gap-2">
+                        <i data-lucide="download" class="w-3.5 h-3.5"></i> SAVE
+                    </a>
+                    <button id="modal-trophy-close" class="p-2 rounded text-slate-400 hover:text-white transition">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Modal Stage -->
+            <div class="flex-grow relative overflow-auto p-6 flex items-center justify-center bg-[#02050e]">
+
+                <!-- Badge View -->
+                <div id="trophy-badge-stage" class="w-full h-full flex items-center justify-center"></div>
+
+                <!-- PDF Canvas View -->
+                <div id="trophy-canvas-stage"
+                    class="hidden w-full h-full overflow-auto flex items-start justify-center">
+                    <canvas id="trophy-pdf-canvas"
+                        class="max-w-full rounded shadow-2xl border border-hud-cyan/30"></canvas>
+                </div>
+
+                <!-- Image View -->
+                <div id="trophy-img-stage" class="hidden w-full h-full flex items-center justify-center">
+                    <img id="trophy-img-viewer"
+                        class="max-w-full max-h-full rounded object-contain shadow-2xl border border-hud-cyan/30" src=""
+                        alt="Loot Image">
+                </div>
+
+                <!-- Iframe Fallback -->
+                <iframe id="trophy-iframe-viewer"
+                    class="hidden w-full h-full rounded border border-hud-cyan/30 bg-white" src=""
+                    frameborder="0"></iframe>
+
+                <!-- Loading Spinner -->
+                <div id="trophy-modal-spinner"
+                    class="absolute inset-0 bg-[#02050e] flex flex-col items-center justify-center gap-4 z-50">
+                    <div class="w-12 h-12 rounded-full border-2 border-hud-cyan border-t-transparent animate-spin">
+                    </div>
+                    <span class="font-mono text-xs text-hud-cyan tracking-widest animate-pulse">DECRYPTING TROPHY
+                        HASH...</span>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- TARGET SHOOTING MINI-GAME HUD (Hidden until activated) -->
+    <div id="minigame-hud" class="fixed inset-0 z-[99990] pointer-events-none hidden">
+        <div
+            class="absolute top-20 right-8 bg-black/80 border border-hud-crimson p-4 rounded-xl font-game text-xs text-hud-crimson pointer-events-auto">
+            <div>TARGET PRACTICE ACTIVE</div>
+            <div class="text-2xl text-white font-black mt-1">SCORE: <span id="game-score" class="text-hud-neon">0</span>
+            </div>
+            <button id="exit-minigame"
+                class="mt-3 px-3 py-1 bg-hud-crimson text-black font-mono text-[10px] uppercase font-bold rounded">EXIT
+                DRILL</button>
+        </div>
+    </div>
+
+    <!-- MAIN GAME LOGIC & AUDIO SYNTHESIZER ENGINE -->
+    <script>
+        // Lucide Initializer
+        lucide.createIcons();
+
+        // Real-Time Clock
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clock-display').textContent = now.toTimeString().split(' ')[0];
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Real-Time FPS Tracker
+        let lastFrameTime = performance.now();
+        let frameCount = 0;
+        const fpsEl = document.getElementById('fps-counter');
+        function calcFps(now) {
+            frameCount++;
+            if (now - lastFrameTime >= 1000) {
+                fpsEl.textContent = frameCount;
+                frameCount = 0;
+                lastFrameTime = now;
+            }
+            requestAnimationFrame(calcFps);
+        }
+        requestAnimationFrame(calcFps);
+
+        // WEB AUDIO SYNTHESIZER (Sci-Fi Laser, Beeps, Level-up)
+        let sfxOn = true;
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playSound(type) {
+            if (!sfxOn) return;
+            try {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const now = audioCtx.currentTime;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+
+                if (type === 'hover') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(450, now);
+                    osc.frequency.exponentialRampToValueAtTime(750, now + 0.04);
+                    gain.gain.setValueAtTime(0.03, now);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.04);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.04);
+                } else if (type === 'click' || type === 'shoot') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(900, now);
+                    osc.frequency.exponentialRampToValueAtTime(150, now + 0.1);
+                    gain.gain.setValueAtTime(0.08, now);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.1);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.1);
+                } else if (type === 'hit') {
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(1200, now);
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.08);
+                } else if (type === 'levelup') {
+                    // Ascending chord
+                    [440, 554, 659, 880].forEach((freq, idx) => {
+                        const o = audioCtx.createOscillator();
+                        const g = audioCtx.createGain();
+                        o.type = 'sine';
+                        o.frequency.setValueAtTime(freq, now + idx * 0.08);
+                        g.gain.setValueAtTime(0.06, now + idx * 0.08);
+                        g.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.25);
+                        o.connect(g);
+                        g.connect(audioCtx.destination);
+                        o.start(now + idx * 0.08);
+                        o.stop(now + idx * 0.08 + 0.25);
+                    });
+                }
+            } catch (e) { }
+        }
+
+        const sfxToggle = document.getElementById('sfx-toggle');
+        const sfxLabel = document.getElementById('sfx-label');
+        const sfxIcon = document.getElementById('sfx-icon');
+        sfxToggle.addEventListener('click', () => {
+            sfxOn = !sfxOn;
+            sfxLabel.textContent = sfxOn ? 'SFX: ON' : 'SFX: OFF';
+            sfxIcon.setAttribute('data-lucide', sfxOn ? 'volume-2' : 'volume-x');
+            lucide.createIcons();
+            if (sfxOn) playSound('levelup');
+        });
+
+        document.querySelectorAll('a, button, .loot-card, input, textarea').forEach(el => {
+            el.addEventListener('mouseenter', () => playSound('hover'));
+            el.addEventListener('click', () => playSound('click'));
+        });
+
+        // CROSSHAIR RETICLE TRACKING
+        const crossDot = document.getElementById('crosshair-center');
+        const crossRing = document.getElementById('crosshair-reticle');
+        let mX = window.innerWidth / 2;
+        let mY = window.innerHeight / 2;
+        let ringCurX = mX;
+        let ringCurY = mY;
+
+        window.addEventListener('mousemove', (e) => {
+            mX = e.clientX;
+            mY = e.clientY;
+            crossDot.style.transform = `translate3d(${mX}px, ${mY}px, 0) translate(-50%, -50%)`;
+        });
+
+        function animateReticle() {
+            ringCurX += (mX - ringCurX) * 0.22;
+            ringCurY += (mY - ringCurY) * 0.22;
+            crossRing.style.transform = `translate3d(${ringCurX}px, ${ringCurY}px, 0) translate(-50%, -50%)`;
+            requestAnimationFrame(animateReticle);
+        }
+        animateReticle();
+
+        document.querySelectorAll('a, button, .loot-card').forEach(el => {
+            el.addEventListener('mouseenter', () => document.body.classList.add('targeting'));
+            el.addEventListener('mouseleave', () => document.body.classList.remove('targeting'));
+        });
+
+        // EXTRAORDINARY LOADING SEQUENCE ENGINE
+        const loaderBar = document.getElementById('loader-bar');
+        const loaderStatus = document.getElementById('loader-status');
+        const loaderPct = document.getElementById('loader-pct');
+        const enterBtn = document.getElementById('enter-game-btn');
+        const gameLoader = document.getElementById('game-loader');
+
+        const bootLogs = [
+            "INITIALIZING TACTICAL VIRTUAL MESH...",
+            "COMPILING FLUTTER 60FPS SHADERS...",
+            "MOUNTING RED HAT LINUX CRYPTO DRIVERS...",
+            "AUTHENTICATING 11 GLOBAL LOOT CERTIFICATES...",
+            "CALIBRATING NEURAL COMPANION WEAPONRY...",
+            "SYSTEM NOMINAL // READY FOR INGRESS."
+        ];
+
+        let bootIdx = 0;
+        let currentProgress = 0;
+        const bootTimer = setInterval(() => {
+            currentProgress += Math.floor(Math.random() * 12) + 8;
+            if (currentProgress > 100) currentProgress = 100;
+
+            loaderBar.style.width = currentProgress + '%';
+            loaderPct.textContent = currentProgress + '%';
+
+            if (bootIdx < bootLogs.length - 1 && currentProgress > (bootIdx + 1) * 16) {
+                bootIdx++;
+                loaderStatus.textContent = bootLogs[bootIdx];
+                playSound('hover');
+            }
+
+            if (currentProgress >= 100) {
+                clearInterval(bootTimer);
+                loaderStatus.textContent = "DEPLOYMENT READY // CLICK BELOW TO ENTER";
+                enterBtn.classList.remove('hidden');
+                playSound('levelup');
+            }
+        }, 120);
+
+        enterBtn.addEventListener('click', () => {
+            playSound('shoot');
+            gsap.to(gameLoader, {
+                opacity: 0,
+                duration: 0.6,
+                ease: 'power3.inOut',
+                onComplete: () => {
+                    gameLoader.style.display = 'none';
+                    if (window.confetti) {
+                        confetti({ particleCount: 70, spread: 80, origin: { y: 0.6 } });
+                    }
+                }
+            });
+        });
+
+        // THREE.JS 3D CYBERPUNK SPACE HEX GRID
+        const canvas = document.getElementById('gaming-canvas');
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x030712, 0.012);
+
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 40;
+        camera.position.y = 8;
+
+        const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+        // Create Hex Grid Ground Mesh
+        const gridHelper = new THREE.GridHelper(160, 40, 0x00f0ff, 0x111e3f);
+        gridHelper.position.y = -14;
+        scene.add(gridHelper);
+
+        // Particle Cyber Dust
+        const dustCount = 800;
+        const dustGeo = new THREE.BufferGeometry();
+        const dustPos = new Float32Array(dustCount * 3);
+        for (let i = 0; i < dustCount * 3; i += 3) {
+            dustPos[i] = (Math.random() - 0.5) * 120;
+            dustPos[i + 1] = (Math.random() - 0.5) * 60;
+            dustPos[i + 2] = (Math.random() - 0.5) * 120;
+        }
+        dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPos, 3));
+
+        const dustMat = new THREE.PointsMaterial({
+            size: 0.4,
+            color: 0x00f0ff,
+            transparent: true,
+            opacity: 0.5,
+            blending: THREE.AdditiveBlending
+        });
+        const dustMesh = new THREE.Points(dustGeo, dustMat);
+        scene.add(dustMesh);
+
+        let targetCamX = 0;
+        let targetCamY = 0;
+        window.addEventListener('mousemove', (e) => {
+            targetCamX = (e.clientX - window.innerWidth / 2) * 0.0006;
+            targetCamY = (e.clientY - window.innerHeight / 2) * 0.0006;
+        });
+
+        const threeClock = new THREE.Clock();
+        function renderThree() {
+            requestAnimationFrame(renderThree);
+            const delta = threeClock.getElapsedTime();
+
+            gridHelper.position.z = (delta * 4) % 4;
+            dustMesh.rotation.y = delta * 0.02;
+
+            camera.position.x += (targetCamX * 25 - camera.position.x) * 0.03;
+            camera.position.y += (-targetCamY * 15 + 8 - camera.position.y) * 0.03;
+            camera.lookAt(0, 0, 0);
+
+            renderer.render(scene, camera);
+        }
+        renderThree();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // TROPHY INSPECTION MODAL (Exact 11 Certificate Loot Items)
+        const trophyModal = document.getElementById('trophy-modal');
+        const modalTrophyName = document.getElementById('modal-trophy-name');
+        const modalTrophyMeta = document.getElementById('modal-trophy-meta');
+        const modalTrophyDownload = document.getElementById('modal-trophy-download');
+        const modalTrophyClose = document.getElementById('modal-trophy-close');
+
+        const modalTabBadge = document.getElementById('modal-tab-badge');
+        const modalTabRaw = document.getElementById('modal-tab-raw');
+
+        const trophyBadgeStage = document.getElementById('trophy-badge-stage');
+        const trophyCanvasStage = document.getElementById('trophy-canvas-stage');
+        const trophyImgStage = document.getElementById('trophy-img-stage');
+        const trophyIframeViewer = document.getElementById('trophy-iframe-viewer');
+        const trophyPdfCanvas = document.getElementById('trophy-pdf-canvas');
+        const trophyImgViewer = document.getElementById('trophy-img-viewer');
+        const trophySpinner = document.getElementById('trophy-modal-spinner');
+
+        let curFile = '';
+        let curTitle = '';
+        let curIssuer = '';
+        let curHours = '';
+        let curDate = '';
+        let curIcon = '';
+        let curRarity = 'LEGENDARY';
+
+        function renderGamingBadge(title, issuer, hours, date, icon, rarity) {
+            let color = '#ffb703';
+            if (rarity === 'EPIC') color = '#b026ff';
+            if (rarity === 'RARE') color = '#00f0ff';
+
+            return `
+                <div class="hud-panel w-full max-w-xl p-8 rounded-3xl border text-center relative overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.8)]" style="border-color: ${color};">
+                    <div class="flex justify-between items-center font-mono text-xs border-b border-white/10 pb-4 mb-6">
+                        <span class="text-hud-neon font-bold flex items-center gap-1.5">
+                            <i data-lucide="shield-check" class="w-4 h-4"></i> AUTHENTICATED TROPHY
+                        </span>
+                        <span class="text-slate-400 font-bold" style="color: ${color};">${rarity} ITEM</span>
+                    </div>
+
+                    <div class="w-24 h-24 rounded-2xl mx-auto mb-6 flex items-center justify-center p-1" style="background: linear-gradient(135deg, ${color}, #000);">
+                        <div class="w-full h-full bg-[#080d1a] rounded-2xl flex items-center justify-center text-white">
+                            <i data-lucide="${icon || 'trophy'}" class="w-12 h-12" style="color: ${color};"></i>
+                        </div>
+                    </div>
+
+                    <h2 class="font-game font-black text-2xl sm:text-3xl text-white mb-2">${title}</h2>
+                    <p class="font-mono text-xs text-slate-400 mb-6 uppercase tracking-wider">ISSUED TO OPERATOR // KUNAL SINGH SISODIYA</p>
+
+                    <div class="grid grid-cols-2 gap-4 font-mono text-xs text-left p-4 bg-black/60 border border-white/10 rounded-xl mb-6">
+                        <div>
+                            <span class="text-slate-500 block uppercase">Authorized Authority</span>
+                            <span class="text-white font-bold">${issuer}</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-500 block uppercase">Scope & Time</span>
+                            <span class="text-hud-cyan font-bold">${hours} &middot; ${date}</span>
+                        </div>
+                    </div>
+
+                    <div class="font-mono text-[10px] text-slate-500 flex justify-between">
+                        <span>SIG: KSS-SHA256-${Math.random().toString(36).substring(2, 9).toUpperCase()}</span>
+                        <span class="text-hud-neon">VERIFIED ON PHYSICAL CHAIN</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function switchTrophyTab(mode) {
+            modalTabBadge.className = "px-4 py-2 rounded font-bold text-slate-400 hover:text-white transition";
+            modalTabRaw.className = "px-4 py-2 rounded font-bold text-slate-400 hover:text-white transition";
+
+            trophyBadgeStage.classList.add('hidden');
+            trophyCanvasStage.classList.add('hidden');
+            trophyImgStage.classList.add('hidden');
+            trophyIframeViewer.classList.add('hidden');
+            trophySpinner.classList.add('hidden');
+
+            if (mode === 'badge') {
+                modalTabBadge.className = "px-4 py-2 rounded font-bold bg-hud-cyan text-black transition";
+                trophyBadgeStage.innerHTML = renderGamingBadge(curTitle, curIssuer, curHours, curDate, curIcon, curRarity);
+                trophyBadgeStage.classList.remove('hidden');
+                lucide.createIcons();
+            } else {
+                modalTabRaw.className = "px-4 py-2 rounded font-bold bg-hud-cyan text-black transition";
+                trophySpinner.classList.remove('hidden');
+
+                const ext = curFile.split('.').pop().toLowerCase();
+                if (['jpg', 'jpeg', 'png'].includes(ext)) {
+                    trophyImgViewer.src = curFile;
+                    trophyImgViewer.onload = () => {
+                        trophySpinner.classList.add('hidden');
+                        trophyImgStage.classList.remove('hidden');
+                    };
+                    trophyImgViewer.onerror = () => {
+                        trophySpinner.classList.add('hidden');
+                        trophyImgStage.classList.remove('hidden');
+                    };
+                } else {
+                    // Try PDF.js Canvas
+                    try {
+                        const task = pdfjsLib.getDocument(curFile);
+                        const pdfDoc = await task.promise;
+                        const page = await pdfDoc.getPage(1);
+                        const containerWidth = trophyCanvasStage.clientWidth || 800;
+                        const viewport = page.getViewport({ scale: Math.min((containerWidth - 30) / page.getViewport({ scale: 1 }).width, 1.5) });
+
+                        const ctx = trophyPdfCanvas.getContext('2d');
+                        const scale = window.devicePixelRatio || 1;
+                        trophyPdfCanvas.width = Math.floor(viewport.width * scale);
+                        trophyPdfCanvas.height = Math.floor(viewport.height * scale);
+                        trophyPdfCanvas.style.width = Math.floor(viewport.width) + "px";
+                        trophyPdfCanvas.style.height = Math.floor(viewport.height) + "px";
+
+                        await page.render({
+                            canvasContext: ctx,
+                            viewport: viewport,
+                            transform: [scale, 0, 0, scale, 0, 0]
+                        }).promise;
+
+                        trophySpinner.classList.add('hidden');
+                        trophyCanvasStage.classList.remove('hidden');
+                    } catch (e) {
+                        trophyCanvasStage.classList.add('hidden');
+                        trophyIframeViewer.src = curFile;
+                        trophyIframeViewer.classList.remove('hidden');
+                        trophySpinner.classList.add('hidden');
+                    }
+                }
+            }
+        }
+
+        modalTabBadge.addEventListener('click', () => switchTrophyTab('badge'));
+        modalTabRaw.addEventListener('click', () => switchTrophyTab('raw'));
+
+        function openTrophy(file, title, issuer, hours, date, icon, rarity) {
+            curFile = file;
+            curTitle = title;
+            curIssuer = issuer;
+            curHours = hours;
+            curDate = date;
+            curIcon = icon;
+            curRarity = rarity || 'LEGENDARY';
+
+            modalTrophyName.textContent = title;
+            modalTrophyMeta.textContent = `AUTHENTICATOR: ${issuer} // ${date}`;
+            modalTrophyDownload.href = file;
+
+            switchTrophyTab('badge');
+
+            trophyModal.classList.remove('hidden');
+            setTimeout(() => {
+                trophyModal.classList.remove('opacity-0');
+                trophyModal.querySelector('.hud-panel').classList.remove('scale-95');
+                trophyModal.querySelector('.hud-panel').classList.add('scale-100');
+            }, 10);
+            playSound('shoot');
+        }
+
+        function closeTrophy() {
+            trophyModal.classList.add('opacity-0');
+            trophyModal.querySelector('.hud-panel').classList.remove('scale-100');
+            trophyModal.querySelector('.hud-panel').classList.add('scale-95');
+            setTimeout(() => {
+                trophyModal.classList.add('hidden');
+                trophyIframeViewer.src = '';
+                trophyImgViewer.src = '';
+            }, 300);
+        }
+
+        modalTrophyClose.addEventListener('click', closeTrophy);
+        trophyModal.addEventListener('click', (e) => {
+            if (e.target === trophyModal) closeTrophy();
+        });
+
+        document.querySelectorAll('.loot-card').forEach(card => {
+            card.addEventListener('click', () => {
+                openTrophy(
+                    card.dataset.file,
+                    card.querySelector('h3').textContent,
+                    card.dataset.issuer || 'Verified Authority',
+                    card.dataset.hours || 'Accredited',
+                    card.dataset.issued || '2025',
+                    card.dataset.icon || 'trophy',
+                    card.dataset.rarity || 'LEGENDARY'
+                );
+            });
+        });
+
+        // AI TACTICAL RECRUITER ENGINE (Gemini 2.5 via OpenRouter)
+        const kunalIntel = `
+        KUNAL SINGH SISODIYA MASTER COMBAT DOSSIER:
+        - Rank / Role: Senior-grade Entry Flutter Developer / Systems Architect.
+        - Academic Base: SAGE University, Indore (B.Tech in Information Technology, Graduation Target: July 2026).
+        - Direct Comms: +91 7389164258 | Kunalsinghsisodiya9378@gmail.com
+        - Location: Pithampur / Indore, MP, India.
+        - Core Armory (Mobile): Flutter SDK, Dart, Material UI, Provider, Async Streams, REST APIs, JSON Parsing, Firebase Auth & Firestore.
+        - Core Armory (Systems): Python (Red Hat Certified AD141), Java Basics, Object-Oriented Programming (OOP), Data Structures & Algorithms, Linux CLI.
+        - Completed Deployments:
+          1. DecisionSense: AI-assisted Flutter app analyzing cognitive biases and empowering rational judgment with zero user telemetry leakage.
+          2. Mental Health Companion: Empathetic AI conversational interface built in Flutter for stress-reduction & mood tracking.
+          3. DataStore Notes: Resilient offline-first Flutter application with local CRUD caching and responsive architecture.
+        - Loot & Accreditations (11 Items): AWS Cloud Foundations (20h), Red Hat AD141 Python (32h), Cisco Intro to Modern AI, Cisco Ethical Hacker, Microsoft Azure Fundamentals (AZ-900), SAGE Winter School AI & Data Science, Wincom SAP Material Management (Grade A+), Internshala Software Testing (6w), MSME Advance Excel, AI for Techies Python, SAGE IoT ML.
+        `;
+
+        const openRouterKey = "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";
+
+        async function queryAI(systemPrompt, userQuery) {
+            const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${openRouterKey}`,
+                    "HTTP-Referer": window.location.href,
+                    "X-Title": "Kunal Gaming Portfolio"
+                },
+                body: JSON.stringify({
+                    model: "google/gemini-2.5-flash",
+                    max_tokens: 1000,
+                    messages: [
+                        { role: "system", content: systemPrompt },
+                        { role: "user", content: userQuery }
+                    ]
+                })
+            });
+
+            if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                throw new Error(err.error?.message || `HTTP ${res.status}`);
+            }
+            const data = await res.json();
+            return data.choices[0].message.content;
+        }
+
+        // View Toggles for AI Deck
+        const modeChatBtn = document.getElementById('ai-mode-chat');
+        const modeJdBtn = document.getElementById('ai-mode-jd');
+        const chatView = document.getElementById('ai-chat-view');
+        const jdView = document.getElementById('ai-jd-view');
+
+        modeChatBtn.addEventListener('click', () => {
+            modeChatBtn.className = "w-full flex items-center gap-3 px-4 py-3.5 rounded-xl font-game font-bold text-xs uppercase tracking-wider transition bg-hud-cyan text-black shadow-[0_0_20px_rgba(0,240,255,0.6)]";
+            modeJdBtn.className = "w-full flex items-center gap-3 px-4 py-3.5 rounded-xl font-game font-bold text-xs uppercase tracking-wider transition text-slate-400 hover:text-white hover:bg-white/5 border border-transparent hover:border-white/10";
+            chatView.classList.remove('hidden');
+            jdView.classList.add('hidden');
+            playSound('hover');
+        });
+
+        modeJdBtn.addEventListener('click', () => {
+            modeJdBtn.className = "w-full flex items-center gap-3 px-4 py-3.5 rounded-xl font-game font-bold text-xs uppercase tracking-wider transition bg-hud-amber text-black shadow-[0_0_20px_rgba(255,183,3,0.6)]";
+            modeChatBtn.className = "w-full flex items-center gap-3 px-4 py-3.5 rounded-xl font-game font-bold text-xs uppercase tracking-wider transition text-slate-400 hover:text-white hover:bg-white/5 border border-transparent hover:border-white/10";
+            jdView.classList.remove('hidden');
+            chatView.classList.add('hidden');
+            playSound('hover');
+        });
+
+        // Chat Form Handler
+        const aiForm = document.getElementById('ai-input-form');
+        const aiInput = document.getElementById('ai-user-query');
+        const aiStream = document.getElementById('ai-log-stream');
+
+        function appendLog(sender, text) {
+            const row = document.createElement('div');
+            row.className = `flex items-start gap-3.5 max-w-[85%] ${sender === 'user' ? 'ml-auto flex-row-reverse' : ''}`;
+            row.innerHTML = `
+                <div class="w-8 h-8 rounded-lg ${sender === 'user' ? 'bg-hud-neon text-black' : 'bg-hud-cyan text-black'} flex items-center justify-center font-bold text-xs flex-shrink-0">
+                    ${sender === 'user' ? 'ME' : 'AI'}
+                </div>
+                <div class="p-4 rounded-xl ${sender === 'user' ? 'bg-hud-neon/10 border border-hud-neon/30 text-white' : 'bg-white/5 border border-hud-cyan/30 text-slate-200'} leading-relaxed prose prose-invert prose-p:text-xs">
+                    ${sender === 'ai' && typeof marked !== 'undefined' ? marked.parse(text) : text}
+                </div>
+            `;
+            aiStream.appendChild(row);
+            aiStream.scrollTop = aiStream.scrollHeight;
+        }
+
+        aiForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const query = aiInput.value.trim();
+            if (!query) return;
+            appendLog('user', query);
+            aiInput.value = '';
+            playSound('shoot');
+
+            const pulseMsg = document.createElement('div');
+            pulseMsg.className = 'font-mono text-xs text-hud-cyan animate-pulse ml-12';
+            pulseMsg.textContent = 'TRANSMITTING TO NEURAL LINK...';
+            aiStream.appendChild(pulseMsg);
+            aiStream.scrollTop = aiStream.scrollHeight;
+
+            try {
+                const answer = await queryAI(
+                    "You are Virtual Kunal, a high-tactical AI companion for Kunal Singh Sisodiya. Be crisp, professional, tactical, game-inspired yet enterprise-level. Use markdown.",
+                    `User Query: ${query}\n\nOperator Dossier:\n${kunalIntel}`
+                );
+                pulseMsg.remove();
+                appendLog('ai', answer);
+                playSound('hit');
+            } catch (err) {
+                pulseMsg.remove();
+                appendLog('ai', `COMMUNICATION BLOCKED: ${err.message}. Direct communications available via email: Kunalsinghsisodiya9378@gmail.com.`);
+            }
+        });
+
+        document.querySelectorAll('.ai-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                aiInput.value = chip.textContent.trim();
+                aiForm.dispatchEvent(new Event('submit'));
+            });
+        });
+
+        document.getElementById('clear-log-btn').addEventListener('click', () => {
+            aiStream.innerHTML = `
+                <div class="flex items-start gap-3.5 max-w-[85%]">
+                    <div class="w-8 h-8 rounded-lg bg-hud-cyan text-black flex items-center justify-center font-bold text-xs flex-shrink-0">AI</div>
+                    <div class="p-4 rounded-xl bg-white/5 border border-hud-cyan/30 text-slate-200 leading-relaxed">
+                        <span class="text-hud-cyan font-bold block mb-1">SYSTEM LOG RESET:</span>
+                        Memory cleared. Awaiting next tactical directive.
+                    </div>
+                </div>
+            `;
+            playSound('click');
+        });
+
+        // JD Compatibility Matrix Engine
+        const computeFitBtn = document.getElementById('compute-fit-btn');
+        const jdPayload = document.getElementById('jd-payload');
+        const jdResultDeck = document.getElementById('jd-result-deck');
+
+        computeFitBtn.addEventListener('click', async () => {
+            const rawJd = jdPayload.value.trim();
+            if (!rawJd) return;
+
+            jdResultDeck.innerHTML = `
+                <div class="flex flex-col items-center justify-center h-full text-hud-amber gap-3">
+                    <div class="w-10 h-10 border-2 border-hud-amber border-t-transparent rounded-full animate-spin"></div>
+                    <span class="font-mono text-xs animate-pulse">COMPUTING LOADOUT COMPATIBILITY...</span>
+                </div>
+            `;
+            playSound('shoot');
+
+            try {
+                const prompt = `Analyze this Job Description and benchmark candidate Kunal Singh Sisodiya against it. Return a structured tactical military/gaming combat dossier:
+1. MATCH SCORE: e.g. [94% OPERATIONAL MATCH]
+2. PRIMARY WEAPON ALIGNMENTS (Flutter, Dart, Firebase, Python, AWS)
+3. CERTIFIED LOADOUT PERKS
+4. FINAL DEPLOYMENT DIRECTIVE (Tactical hiring recommendation)
+
+Job Description:
+${rawJd}`;
+
+                const result = await queryAI(
+                    "You are an elite tactical recruitment intelligence officer. Grade candidate qualifications honestly and return clean markdown with bold callouts.",
+                    prompt + "\n\nCandidate Profile:\n" + kunalIntel
+                );
+
+                jdResultDeck.innerHTML = marked.parse(result);
+                playSound('levelup');
+            } catch (err) {
+                jdResultDeck.innerHTML = `
+                    <div class="p-4 bg-hud-crimson/20 border border-hud-crimson text-hud-crimson font-mono text-xs rounded">
+                        COMPUTATION ERROR: ${err.message}. Please review Kunal's CV directly.
+                    </div>
+                `;
+            }
+        });
+
+        // INTERACTIVE TARGET SHOOTING MINI-GAME (ENGAGING EASTER EGG)
+        const minigameToggle = document.getElementById('minigame-toggle');
+        const minigameHud = document.getElementById('minigame-hud');
+        const gameScoreEl = document.getElementById('game-score');
+        const exitMinigame = document.getElementById('exit-minigame');
+        let gameScore = 0;
+        let miniGameInterval = null;
+
+        function spawnTarget() {
+            const target = document.createElement('div');
+            target.className = 'fixed w-12 h-12 rounded-full border-2 border-hud-crimson bg-hud-crimson/20 flex items-center justify-center cursor-crosshair z-[99995] animate-ping';
+            target.style.top = Math.random() * (window.innerHeight - 150) + 80 + 'px';
+            target.style.left = Math.random() * (window.innerWidth - 100) + 50 + 'px';
+            target.innerHTML = '<i data-lucide="crosshair" class="w-6 h-6 text-hud-crimson"></i>';
+            document.body.appendChild(target);
+            lucide.createIcons();
+
+            target.addEventListener('click', (e) => {
+                e.stopPropagation();
+                playSound('hit');
+                gameScore += 100;
+                gameScoreEl.textContent = gameScore;
+                target.remove();
+                if (window.confetti) {
+                    confetti({ particleCount: 20, spread: 40, origin: { x: e.clientX / window.innerWidth, y: e.clientY / window.innerHeight } });
+                }
+            });
+
+            setTimeout(() => { if (target.parentNode) target.remove(); }, 2500);
+        }
+
+        minigameToggle.addEventListener('click', () => {
+            minigameHud.classList.remove('hidden');
+            gameScore = 0;
+            gameScoreEl.textContent = gameScore;
+            playSound('levelup');
+            miniGameInterval = setInterval(spawnTarget, 1000);
+        });
+
+        exitMinigame.addEventListener('click', () => {
+            minigameHud.classList.add('hidden');
+            clearInterval(miniGameInterval);
+            document.querySelectorAll('.animate-ping').forEach(el => {
+                if (el.style.position === 'fixed') el.remove();
+            });
+            playSound('click');
+        });
+    </script>
+</body>
+
+</html>
